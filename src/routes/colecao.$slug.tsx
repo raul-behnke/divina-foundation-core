@@ -1,0 +1,234 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { ProductCard } from "@/components/site/ProductCard";
+import { products, type Product } from "@/data/products";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+
+const CATEGORY_MAP: Record<string, { title: string; description: string; filter: (p: Product) => boolean } > = {
+  vestidos: {
+    title: "Vestidos",
+    description: "Vestidos midi, longos, curtos e chemise. Modelagens contemporâneas para todos os momentos — do café da manhã ao jantar mais especial.",
+    filter: (p) => p.category === "vestidos",
+  },
+  alfaiataria: {
+    title: "Alfaiataria",
+    description: "Blazers, calças, conjuntos. A nossa especialidade — caimentos pensados para durar muito além da estação.",
+    filter: (p) => p.category === "alfaiataria",
+  },
+  blusas: {
+    title: "Blusas & Camisas",
+    description: "Blusas, camisas e regatas em tecidos premium. Peças-coringa para compor com alfaiataria ou usar protagonistas.",
+    filter: (p) => p.category === "blusas",
+  },
+  plus: {
+    title: "Plus Size",
+    description: "Coleção Plus do G1 ao G3. Modelagens desenvolvidas para curvas reais — alfaiataria, vestidos e blusas com a mesma obsessão pelo caimento.",
+    filter: (p) => p.isPlus,
+  },
+  novidades: {
+    title: "Novidades",
+    description: "Recém-chegados ao atelier — as últimas peças que entraram na coleção.",
+    filter: (p) => p.isNew,
+  },
+};
+
+export const Route = createFileRoute("/colecao/$slug")({
+  loader: ({ params }) => {
+    const cfg = CATEGORY_MAP[params.slug];
+    if (!cfg) throw notFound();
+    return { slug: params.slug, cfg };
+  },
+  head: ({ params }) => {
+    const cfg = CATEGORY_MAP[params.slug];
+    const title = cfg ? `${cfg.title} | Divina Mulher` : "Coleção | Divina Mulher";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: cfg?.description ?? "Coleção Divina Mulher" },
+        { property: "og:title", content: title },
+        { property: "og:url", content: `/colecao/${params.slug}` },
+      ],
+      links: [{ rel: "canonical", href: `/colecao/${params.slug}` }],
+    };
+  },
+  component: ColecaoPage,
+  notFoundComponent: () => (
+    <SiteLayout>
+      <div className="container-dm py-24 text-center">
+        <h1 className="font-display text-3xl">Coleção não encontrada</h1>
+        <Link to="/" className="text-primary mt-4 inline-block">Voltar à home</Link>
+      </div>
+    </SiteLayout>
+  ),
+});
+
+const SORTS = [
+  { id: "relevance", label: "Relevância" },
+  { id: "price-asc", label: "Menor preço" },
+  { id: "price-desc", label: "Maior preço" },
+  { id: "new", label: "Novidades" },
+];
+
+const COLOR_SWATCHES = [
+  { name: "Preto", hex: "#171717" },
+  { name: "Vinho", hex: "#7E2145" },
+  { name: "Off-white", hex: "#F2EFE9" },
+  { name: "Rosé", hex: "#E296B0" },
+  { name: "Marinho", hex: "#1E2A44" },
+  { name: "Caramelo", hex: "#A86B3C" },
+];
+const SIZE_CHIPS = ["PP", "P", "M", "G", "GG", "G1", "G2", "G3"];
+
+function ColecaoPage() {
+  const { cfg, slug } = Route.useLoaderData();
+  const [sort, setSort] = useState("relevance");
+  const [colors, setColors] = useState<string[]>([]);
+  const [sizes, setSizes] = useState<string[]>([]);
+  const [drawer, setDrawer] = useState(false);
+
+  const filtered = useMemo(() => {
+    let r = products.filter(cfg.filter);
+    if (colors.length) r = r.filter((p) => p.colors.some((c) => colors.includes(c.name)));
+    if (sizes.length) r = r.filter((p) => p.sizes.some((s) => sizes.includes(s)));
+    if (sort === "price-asc") r = [...r].sort((a, b) => a.price - b.price);
+    if (sort === "price-desc") r = [...r].sort((a, b) => b.price - a.price);
+    if (sort === "new") r = [...r].sort((a, b) => Number(b.isNew) - Number(a.isNew));
+    return r;
+  }, [cfg, colors, sizes, sort]);
+
+  const toggle = (arr: string[], v: string, set: (a: string[]) => void) =>
+    set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+
+  return (
+    <SiteLayout>
+      <nav aria-label="Migalhas" className="container-dm pt-8 text-xs text-muted-foreground">
+        <Link to="/" className="hover:text-primary">Home</Link> <span className="mx-1">/</span>
+        <span className="text-foreground">{cfg.title}</span>
+      </nav>
+
+      <header className="container-dm pt-6 pb-10 md:pt-10 md:pb-14 max-w-3xl">
+        <h1 className="font-display text-3xl md:text-5xl leading-tight">{cfg.title}</h1>
+        <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
+      </header>
+
+      {/* Toolbar */}
+      <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
+        <p className="text-sm text-muted-foreground">{filtered.length} produto{filtered.length === 1 ? "" : "s"}</p>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setDrawer(true)} className="lg:hidden inline-flex items-center gap-2 text-sm font-display tracking-wide border border-border px-4 h-10">
+            <SlidersHorizontal className="size-4" /> Filtrar
+          </button>
+          <label className="relative inline-flex items-center">
+            <span className="sr-only">Ordenar</span>
+            <select value={sort} onChange={(e) => setSort(e.target.value)} className="appearance-none bg-transparent border border-border px-4 pr-9 h-10 text-sm font-display tracking-wide focus:outline-none focus:border-primary">
+              {SORTS.map((s) => <option key={s.id} value={s.id}>Ordenar: {s.label}</option>)}
+            </select>
+            <ChevronDown className="size-4 absolute right-3 pointer-events-none" />
+          </label>
+        </div>
+      </div>
+
+      <section className="container-dm grid lg:grid-cols-[260px_1fr] gap-10 py-10 md:py-14">
+        {/* Sidebar */}
+        <aside className="hidden lg:block">
+          <FilterContent
+            colors={colors} sizes={sizes}
+            toggleColor={(v) => toggle(colors, v, setColors)}
+            toggleSize={(v) => toggle(sizes, v, setSizes)}
+            clear={() => { setColors([]); setSizes([]); }}
+          />
+        </aside>
+
+        <div>
+          {filtered.length === 0 ? (
+            <p className="text-muted-foreground py-12 text-center">Nenhum produto encontrado com esses filtros.</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-6">
+              {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Mobile filter drawer */}
+      {drawer && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-foreground/40" onClick={() => setDrawer(false)} />
+          <div className="absolute inset-y-0 right-0 w-[85%] max-w-sm bg-background flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-border">
+              <p className="font-display text-lg">Filtros</p>
+              <button onClick={() => setDrawer(false)} aria-label="Fechar"><X className="size-5" /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              <FilterContent
+                colors={colors} sizes={sizes}
+                toggleColor={(v) => toggle(colors, v, setColors)}
+                toggleSize={(v) => toggle(sizes, v, setSizes)}
+                clear={() => { setColors([]); setSizes([]); }}
+              />
+            </div>
+            <div className="p-5 border-t border-border">
+              <button onClick={() => setDrawer(false)} className="w-full h-12 bg-primary text-primary-foreground font-display tracking-wide">
+                Ver {filtered.length} produtos
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden slug usage to satisfy ts */}
+      <span hidden>{slug}</span>
+    </SiteLayout>
+  );
+}
+
+function FilterContent({
+  colors, sizes, toggleColor, toggleSize, clear,
+}: {
+  colors: string[]; sizes: string[];
+  toggleColor: (v: string) => void; toggleSize: (v: string) => void; clear: () => void;
+}) {
+  return (
+    <div className="space-y-8">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <p className="font-display text-sm tracking-wider uppercase">Filtros</p>
+          <button onClick={clear} className="text-xs text-muted-foreground hover:text-primary">Limpar</button>
+        </div>
+      </div>
+      <div>
+        <p className="font-display text-sm mb-3">Cor</p>
+        <div className="flex flex-wrap gap-2">
+          {COLOR_SWATCHES.map((c) => {
+            const on = colors.includes(c.name);
+            return (
+              <button key={c.name} onClick={() => toggleColor(c.name)} title={c.name} aria-pressed={on}
+                className={`size-8 rounded-full border-2 transition ${on ? "border-primary ring-2 ring-primary/30" : "border-border"}`}
+                style={{ background: c.hex }} />
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <p className="font-display text-sm mb-3">Tamanho</p>
+        <div className="flex flex-wrap gap-2">
+          {SIZE_CHIPS.map((s) => {
+            const on = sizes.includes(s);
+            return (
+              <button key={s} onClick={() => toggleSize(s)} aria-pressed={on}
+                className={`min-w-10 h-10 px-3 text-sm font-display border transition ${on ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-foreground"}`}>
+                {s}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <p className="font-display text-sm mb-3">Faixa de preço</p>
+        <div className="text-sm text-muted-foreground">R$ 89 — R$ 819</div>
+        <input type="range" min={89} max={819} defaultValue={819} className="w-full mt-3 accent-[var(--primary)]" />
+      </div>
+    </div>
+  );
+}
