@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as GuiaDeMedidasRouteImport } from './routes/guia-de-medidas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ColecaoSlugRouteImport } from './routes/colecao.$slug'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -28,35 +29,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ColecaoSlugRoute = ColecaoSlugRouteImport.update({
+  id: '/colecao/$slug',
+  path: '/colecao/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
+  '/colecao/$slug': typeof ColecaoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
+  '/colecao/$slug': typeof ColecaoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
+  '/colecao/$slug': typeof ColecaoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/guia-de-medidas' | '/sobre'
+  fullPaths: '/' | '/guia-de-medidas' | '/sobre' | '/colecao/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/guia-de-medidas' | '/sobre'
-  id: '__root__' | '/' | '/guia-de-medidas' | '/sobre'
+  to: '/' | '/guia-de-medidas' | '/sobre' | '/colecao/$slug'
+  id: '__root__' | '/' | '/guia-de-medidas' | '/sobre' | '/colecao/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuiaDeMedidasRoute: typeof GuiaDeMedidasRoute
   SobreRoute: typeof SobreRoute
+  ColecaoSlugRoute: typeof ColecaoSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/colecao/$slug': {
+      id: '/colecao/$slug'
+      path: '/colecao/$slug'
+      fullPath: '/colecao/$slug'
+      preLoaderRoute: typeof ColecaoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuiaDeMedidasRoute: GuiaDeMedidasRoute,
   SobreRoute: SobreRoute,
+  ColecaoSlugRoute: ColecaoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
