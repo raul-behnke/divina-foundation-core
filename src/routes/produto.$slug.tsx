@@ -11,7 +11,7 @@ import { Heart, Truck, RefreshCw, ShieldCheck, Minus, Plus, Star } from "lucide-
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/produto/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { product: import("@/data/products").Product } => {
     const p = getProduct(params.slug);
     if (!p) throw notFound();
     return { product: p };
