@@ -43,7 +43,7 @@ export const Route = createFileRoute("/produto/$slug")({
 });
 
 function ProdutoPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: import("@/data/products").Product };
   const [img, setImg] = useState(0);
   const [color, setColor] = useState(product.colors[0]);
   const [size, setSize] = useState<string | null>(null);
