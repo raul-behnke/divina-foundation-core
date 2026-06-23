@@ -1,29 +1,130 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { HeroBanner } from "@/components/site/HeroBanner";
+import { BenefitBar } from "@/components/site/BenefitBar";
+import { SectionTitle } from "@/components/site/SectionTitle";
+import { CategoryCard } from "@/components/site/CategoryCard";
+import { ProductCard } from "@/components/site/ProductCard";
+import { TestimonialCard } from "@/components/site/TestimonialCard";
+import { NewsletterSection } from "@/components/site/NewsletterSection";
+import { Button } from "@/components/ui/button";
+import { getNew, getPlus, products } from "@/data/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Divina Mulher | Alfaiataria feminina premium" },
+      { name: "description", content: "Coleção de alfaiataria contemporânea para mulheres que buscam elegância em cada detalhe. Vestidos, blazers, calças e Plus Size." },
+      { property: "og:title", content: "Divina Mulher | Alfaiataria feminina premium" },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
-  component: Index,
+  component: HomePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const TESTIMONIALS = [
+  { name: "Mariana A.", city: "Joinville/SC", text: "As peças têm um caimento que parece feito sob medida. Comprei um conjunto de alfaiataria e já é meu uniforme das reuniões importantes." },
+  { name: "Cláudia R.", city: "Curitiba/PR", text: "Encontrei na Divina Mulher a alfaiataria Plus que sempre busquei. Modelagem inteligente, sem perder feminilidade." },
+  { name: "Beatriz L.", city: "São Paulo/SP", text: "Atendimento humanizado de verdade. Me ajudaram a escolher o tamanho e a peça chegou impecável." },
+];
+
+function HomePage() {
+  const novidades = getNew().slice(0, 8);
+  const plus = getPlus();
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <SiteLayout>
+      <HeroBanner />
+      <BenefitBar />
+
+      {/* Categorias */}
+      <section className="container-dm py-16 md:py-24">
+        <SectionTitle eyebrow="Coleções" title="Encontre seu próximo favorito" description="Selecionadas para mulheres que valorizam alfaiataria, conforto e atitude." />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <CategoryCard title="Vestidos" to="/colecao/vestidos" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/VESTIDOS.png" alt="Vestidos Divina Mulher" />
+          <CategoryCard title="Alfaiataria" to="/colecao/alfaiataria" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/BLAZERS.png" alt="Alfaiataria Divina Mulher" />
+          <CategoryCard title="Blusas" to="/colecao/blusas" image={products[6].images[0]} alt="Blusas e camisas femininas" />
+          <CategoryCard title="Plus Size" to="/colecao/plus" image={products[8].images[0]} alt="Coleção Plus Size — modelo plus-size em alfaiataria" />
+        </div>
+      </section>
+
+      {/* Novidades */}
+      <section className="container-dm py-12 md:py-20">
+        <div className="flex items-end justify-between mb-8 md:mb-12">
+          <SectionTitle eyebrow="Recém-chegados" title="Novidades" align="left" />
+          <Link to="/colecao/vestidos" className="hidden md:inline-block text-sm font-display tracking-wide text-primary hover:underline underline-offset-4">
+            Ver tudo →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
+          {novidades.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      </section>
+
+      {/* Banner institucional */}
+      <section className="relative bg-background-soft py-20 md:py-28 monogram-bg overflow-hidden">
+        <div className="container-dm grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <p className="text-xs tracking-[0.25em] uppercase text-primary font-display mb-4">Desde 2007</p>
+            <h2 className="font-display text-3xl md:text-5xl leading-tight text-foreground">
+              18 anos vestindo mulheres que escolhem se sentir bem.
+            </h2>
+            <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
+              Nascemos em Joinville com uma convicção: alfaiataria não é privilégio — é linguagem. E toda mulher merece falar essa língua, no seu corpo, no seu tempo.
+            </p>
+            <Button asChild size="lg" className="mt-8 bg-primary hover:bg-[var(--primary-hover)] text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
+              <Link to="/sobre">Nossa história</Link>
+            </Button>
+          </div>
+          <div className="aspect-[4/5] overflow-hidden">
+            <img src="https://divinamulher.com.br/wp-content/uploads/2025/12/15393459661-estudio-divina-mulher-31-10-2025-0695.jpg" alt="Editorial Divina Mulher — atelier" className="w-full h-full object-cover" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      {/* Plus Size */}
+      <section className="container-dm py-16 md:py-24">
+        <SectionTitle eyebrow="Plus Size" title="Alfaiataria que valoriza diferentes corpos" description="Modelagens desenvolvidas para curvas reais, sem abrir mão da estrutura e do refinamento." align="left" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
+          {plus.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+        <div className="mt-10 text-center">
+          <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
+            <Link to="/colecao/plus">Ver Plus Size</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Sobre — resumo */}
+      <section className="container-dm py-12 md:py-16">
+        <div className="bg-foreground text-background py-16 md:py-24 px-6 md:px-16 grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <p className="text-xs tracking-[0.25em] uppercase text-accent-peach font-display mb-3">Sobre a Marca</p>
+            <h2 className="font-display text-3xl md:text-4xl leading-tight">
+              Joinville no DNA, atelier no detalhe.
+            </h2>
+          </div>
+          <div>
+            <p className="text-base md:text-lg opacity-85 leading-relaxed">
+              Cada coleção é pensada para quem entende que a roupa certa muda o dia. Alfaiataria contemporânea, modelagens generosas e tecidos selecionados — para mulheres reais, vivendo vidas reais.
+            </p>
+            <Link to="/sobre" className="inline-block mt-6 text-sm font-display tracking-wide text-accent-peach hover:underline underline-offset-4">
+              Conheça nossa história →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Depoimentos */}
+      <section className="container-dm py-16 md:py-24">
+        <SectionTitle eyebrow="Quem usa, conta" title="Mulheres Divina" />
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6">
+          {TESTIMONIALS.map((t) => <TestimonialCard key={t.name} t={t} />)}
+        </div>
+      </section>
+
+      <NewsletterSection />
+    </SiteLayout>
   );
 }
