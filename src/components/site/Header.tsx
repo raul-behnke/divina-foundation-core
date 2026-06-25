@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, Search, ShoppingBag, Menu, X, User } from "lucide-react";
+import { Heart, Search, Menu, X, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CartDrawer } from "@/components/site/CartDrawer";
+
 
 const LOGO = "https://divinamulher.com.br/wp-content/uploads/2025/07/logoDivinaMulher.webp";
 
@@ -107,9 +109,7 @@ export function Header() {
           <button aria-label="Conta" onClick={handle} className="hidden md:inline-flex p-2 hover:text-primary transition">
             <User className="size-5" />
           </button>
-          <button aria-label="Sacola" onClick={handle} className="p-2 hover:text-primary transition relative">
-            <ShoppingBag className="size-5" />
-          </button>
+          <CartDrawer />
         </div>
       </div>
 

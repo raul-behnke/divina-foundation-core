@@ -1,46 +1,26 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ProductCard } from "@/components/site/ProductCard";
-import { products, type Product } from "@/data/products";
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
-
-const CATEGORY_MAP: Record<string, { title: string; description: string; filter: (p: Product) => boolean } > = {
-  vestidos: {
-    title: "Vestidos",
-    description: "Vestidos midi, longos, curtos e chemise. Modelagens contemporâneas para todos os momentos — do café da manhã ao jantar mais especial.",
-    filter: (p) => p.category === "vestidos",
-  },
-  alfaiataria: {
-    title: "Alfaiataria",
-    description: "Blazers, calças, conjuntos. A nossa especialidade — caimentos pensados para durar muito além da estação.",
-    filter: (p) => p.category === "alfaiataria",
-  },
-  blusas: {
-    title: "Blusas & Camisas",
-    description: "Blusas, camisas e regatas em tecidos premium. Peças-coringa para compor com alfaiataria ou usar protagonistas.",
-    filter: (p) => p.category === "blusas",
-  },
-  plus: {
-    title: "Plus Size",
-    description: "Coleção Plus do G1 ao G3. Modelagens desenvolvidas para curvas reais — alfaiataria, vestidos e blusas com a mesma obsessão pelo caimento.",
-    filter: (p) => p.isPlus,
-  },
-  novidades: {
-    title: "Novidades",
-    description: "Recém-chegados ao atelier — as últimas peças que entraram na coleção.",
-    filter: (p) => p.isNew,
-  },
-};
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import {
+  COLLECTION_QUERIES,
+  getProductColors,
+  getProductPrice,
+  getProductSizes,
+  isProductNew,
+} from "@/data/products";
+import { ChevronDown, SlidersHorizontal, X, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/colecao/$slug")({
   loader: ({ params }) => {
-    const cfg = CATEGORY_MAP[params.slug];
+    const cfg = COLLECTION_QUERIES[params.slug];
     if (!cfg) throw notFound();
     return { slug: params.slug, cfg };
   },
   head: ({ params }) => {
-    const cfg = CATEGORY_MAP[params.slug];
+    const cfg = COLLECTION_QUERIES[params.slug];
     const title = cfg ? `${cfg.title} | Divina Mulher` : "Coleção | Divina Mulher";
     return {
       meta: [
@@ -87,15 +67,25 @@ function ColecaoPage() {
   const [sizes, setSizes] = useState<string[]>([]);
   const [drawer, setDrawer] = useState(false);
 
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["products", slug, cfg.query ?? null],
+    queryFn: () => fetchProducts(cfg.query),
+  });
+
   const filtered = useMemo(() => {
-    let r = products.filter(cfg.filter);
-    if (colors.length) r = r.filter((p) => p.colors.some((c) => colors.includes(c.name)));
-    if (sizes.length) r = r.filter((p) => p.sizes.some((s) => sizes.includes(s)));
-    if (sort === "price-asc") r = [...r].sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") r = [...r].sort((a, b) => b.price - a.price);
-    if (sort === "new") r = [...r].sort((a, b) => Number(b.isNew) - Number(a.isNew));
+    let r: ShopifyProduct[] = [...products];
+    if (slug === "novidades") r = r.filter(isProductNew).length > 0 ? r.filter(isProductNew) : r;
+    if (colors.length) {
+      r = r.filter((p) => getProductColors(p).some((c) => colors.some((sel) => sel.toLowerCase() === c.name.toLowerCase())));
+    }
+    if (sizes.length) {
+      r = r.filter((p) => getProductSizes(p).some((s) => sizes.includes(s.toUpperCase())));
+    }
+    if (sort === "price-asc") r = [...r].sort((a, b) => getProductPrice(a) - getProductPrice(b));
+    if (sort === "price-desc") r = [...r].sort((a, b) => getProductPrice(b) - getProductPrice(a));
+    if (sort === "new") r = [...r].sort((a, b) => Number(isProductNew(b)) - Number(isProductNew(a)));
     return r;
-  }, [cfg, colors, sizes, sort]);
+  }, [products, slug, colors, sizes, sort]);
 
   const toggle = (arr: string[], v: string, set: (a: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -112,9 +102,10 @@ function ColecaoPage() {
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
       </header>
 
-      {/* Toolbar */}
       <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
-        <p className="text-sm text-muted-foreground">{filtered.length} produto{filtered.length === 1 ? "" : "s"}</p>
+        <p className="text-sm text-muted-foreground">
+          {isLoading ? "Carregando..." : `${filtered.length} produto${filtered.length === 1 ? "" : "s"}`}
+        </p>
         <div className="flex items-center gap-3">
           <button onClick={() => setDrawer(true)} className="lg:hidden inline-flex items-center gap-2 text-sm font-display tracking-wide border border-border px-4 h-10">
             <SlidersHorizontal className="size-4" /> Filtrar
@@ -130,7 +121,6 @@ function ColecaoPage() {
       </div>
 
       <section className="container-dm grid lg:grid-cols-[260px_1fr] gap-10 py-10 md:py-14">
-        {/* Sidebar */}
         <aside className="hidden lg:block">
           <FilterContent
             colors={colors} sizes={sizes}
@@ -141,17 +131,21 @@ function ColecaoPage() {
         </aside>
 
         <div>
-          {filtered.length === 0 ? (
-            <p className="text-muted-foreground py-12 text-center">Nenhum produto encontrado com esses filtros.</p>
+          {isLoading ? (
+            <div className="py-20 flex justify-center"><Loader2 className="size-6 animate-spin text-primary" /></div>
+          ) : filtered.length === 0 ? (
+            <div className="py-16 text-center border border-dashed border-border">
+              <p className="font-display text-lg text-foreground">Nenhum produto encontrado</p>
+              <p className="text-sm text-muted-foreground mt-2">Cadastre produtos na Shopify para vê-los nesta coleção.</p>
+            </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-6">
-              {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+              {filtered.map((p) => <ProductCard key={p.node.id} product={p} />)}
             </div>
           )}
         </div>
       </section>
 
-      {/* Mobile filter drawer */}
       {drawer && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-foreground/40" onClick={() => setDrawer(false)} />
@@ -176,9 +170,6 @@ function ColecaoPage() {
           </div>
         </div>
       )}
-
-      {/* Hidden slug usage to satisfy ts */}
-      <span hidden>{slug}</span>
     </SiteLayout>
   );
 }
@@ -191,11 +182,9 @@ function FilterContent({
 }) {
   return (
     <div className="space-y-8">
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <p className="font-display text-sm tracking-wider uppercase">Filtros</p>
-          <button onClick={clear} className="text-xs text-muted-foreground hover:text-primary">Limpar</button>
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        <p className="font-display text-sm tracking-wider uppercase">Filtros</p>
+        <button onClick={clear} className="text-xs text-muted-foreground hover:text-primary">Limpar</button>
       </div>
       <div>
         <p className="font-display text-sm mb-3">Cor</p>
@@ -223,11 +212,6 @@ function FilterContent({
             );
           })}
         </div>
-      </div>
-      <div>
-        <p className="font-display text-sm mb-3">Faixa de preço</p>
-        <div className="text-sm text-muted-foreground">R$ 89 — R$ 819</div>
-        <input type="range" min={89} max={819} defaultValue={819} className="w-full mt-3 accent-[var(--primary)]" />
       </div>
     </div>
   );
