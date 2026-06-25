@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /conta
+Disallow: /carrinho
+Disallow: /checkout
+Disallow: /busca
+
+Sitemap: https://divina-foundation-core.lovable.app/sitemap.xml

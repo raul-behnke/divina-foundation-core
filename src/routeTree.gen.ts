@@ -13,10 +13,12 @@ import { Route as TrocasEDevolucoesRouteImport } from './routes/trocas-e-devoluc
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
 import { Route as TendenciasRouteImport } from './routes/tendencias'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as NossaHistoriaRouteImport } from './routes/nossa-historia'
 import { Route as MaisVendidosRouteImport } from './routes/mais-vendidos'
+import { Route as LookbookRouteImport } from './routes/lookbook'
 import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as GuiaDeMedidasRouteImport } from './routes/guia-de-medidas'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
@@ -38,6 +40,7 @@ import { Route as ContaEnderecosRouteImport } from './routes/conta.enderecos'
 import { Route as ContaDadosRouteImport } from './routes/conta.dados'
 import { Route as ContaCadastroRouteImport } from './routes/conta.cadastro'
 import { Route as ColecaoSlugRouteImport } from './routes/colecao.$slug'
+import { Route as CheckoutSucessoRouteImport } from './routes/checkout.sucesso'
 
 const TrocasEDevolucoesRoute = TrocasEDevolucoesRouteImport.update({
   id: '/trocas-e-devolucoes',
@@ -59,6 +62,11 @@ const SobreRoute = SobreRouteImport.update({
   path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
   id: '/politica-de-privacidade',
   path: '/politica-de-privacidade',
@@ -77,6 +85,11 @@ const NossaHistoriaRoute = NossaHistoriaRouteImport.update({
 const MaisVendidosRoute = MaisVendidosRouteImport.update({
   id: '/mais-vendidos',
   path: '/mais-vendidos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LookbookRoute = LookbookRouteImport.update({
+  id: '/lookbook',
+  path: '/lookbook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LojasRoute = LojasRouteImport.update({
@@ -184,6 +197,11 @@ const ColecaoSlugRoute = ColecaoSlugRouteImport.update({
   path: '/colecao/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSucessoRoute = CheckoutSucessoRouteImport.update({
+  id: '/checkout/sucesso',
+  path: '/checkout/sucesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -198,14 +216,17 @@ export interface FileRoutesByFullPath {
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/lojas': typeof LojasRoute
+  '/lookbook': typeof LookbookRoute
   '/mais-vendidos': typeof MaisVendidosRoute
   '/nossa-historia': typeof NossaHistoriaRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
+  '/checkout/sucesso': typeof CheckoutSucessoRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
   '/conta/cadastro': typeof ContaCadastroRoute
   '/conta/dados': typeof ContaDadosRoute
@@ -228,14 +249,17 @@ export interface FileRoutesByTo {
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/lojas': typeof LojasRoute
+  '/lookbook': typeof LookbookRoute
   '/mais-vendidos': typeof MaisVendidosRoute
   '/nossa-historia': typeof NossaHistoriaRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
+  '/checkout/sucesso': typeof CheckoutSucessoRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
   '/conta/cadastro': typeof ContaCadastroRoute
   '/conta/dados': typeof ContaDadosRoute
@@ -260,14 +284,17 @@ export interface FileRoutesById {
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/lojas': typeof LojasRoute
+  '/lookbook': typeof LookbookRoute
   '/mais-vendidos': typeof MaisVendidosRoute
   '/nossa-historia': typeof NossaHistoriaRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
+  '/checkout/sucesso': typeof CheckoutSucessoRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
   '/conta/cadastro': typeof ContaCadastroRoute
   '/conta/dados': typeof ContaDadosRoute
@@ -293,14 +320,17 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/guia-de-medidas'
     | '/lojas'
+    | '/lookbook'
     | '/mais-vendidos'
     | '/nossa-historia'
     | '/novidades'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/sobre'
     | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
+    | '/checkout/sucesso'
     | '/colecao/$slug'
     | '/conta/cadastro'
     | '/conta/dados'
@@ -323,14 +353,17 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/guia-de-medidas'
     | '/lojas'
+    | '/lookbook'
     | '/mais-vendidos'
     | '/nossa-historia'
     | '/novidades'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/sobre'
     | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
+    | '/checkout/sucesso'
     | '/colecao/$slug'
     | '/conta/cadastro'
     | '/conta/dados'
@@ -354,14 +387,17 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/guia-de-medidas'
     | '/lojas'
+    | '/lookbook'
     | '/mais-vendidos'
     | '/nossa-historia'
     | '/novidades'
     | '/politica-de-privacidade'
+    | '/sitemap.xml'
     | '/sobre'
     | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
+    | '/checkout/sucesso'
     | '/colecao/$slug'
     | '/conta/cadastro'
     | '/conta/dados'
@@ -386,14 +422,17 @@ export interface RootRouteChildren {
   FavoritosRoute: typeof FavoritosRoute
   GuiaDeMedidasRoute: typeof GuiaDeMedidasRoute
   LojasRoute: typeof LojasRoute
+  LookbookRoute: typeof LookbookRoute
   MaisVendidosRoute: typeof MaisVendidosRoute
   NossaHistoriaRoute: typeof NossaHistoriaRoute
   NovidadesRoute: typeof NovidadesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   TendenciasRoute: typeof TendenciasRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   TrocasEDevolucoesRoute: typeof TrocasEDevolucoesRoute
+  CheckoutSucessoRoute: typeof CheckoutSucessoRoute
   ColecaoSlugRoute: typeof ColecaoSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
@@ -428,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/politica-de-privacidade': {
       id: '/politica-de-privacidade'
       path: '/politica-de-privacidade'
@@ -454,6 +500,13 @@ declare module '@tanstack/react-router' {
       path: '/mais-vendidos'
       fullPath: '/mais-vendidos'
       preLoaderRoute: typeof MaisVendidosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lookbook': {
+      id: '/lookbook'
+      path: '/lookbook'
+      fullPath: '/lookbook'
+      preLoaderRoute: typeof LookbookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lojas': {
@@ -603,6 +656,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ColecaoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/sucesso': {
+      id: '/checkout/sucesso'
+      path: '/checkout/sucesso'
+      fullPath: '/checkout/sucesso'
+      preLoaderRoute: typeof CheckoutSucessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -641,14 +701,17 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritosRoute: FavoritosRoute,
   GuiaDeMedidasRoute: GuiaDeMedidasRoute,
   LojasRoute: LojasRoute,
+  LookbookRoute: LookbookRoute,
   MaisVendidosRoute: MaisVendidosRoute,
   NossaHistoriaRoute: NossaHistoriaRoute,
   NovidadesRoute: NovidadesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   TendenciasRoute: TendenciasRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   TrocasEDevolucoesRoute: TrocasEDevolucoesRoute,
+  CheckoutSucessoRoute: CheckoutSucessoRoute,
   ColecaoSlugRoute: ColecaoSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
