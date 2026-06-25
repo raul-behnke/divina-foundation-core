@@ -218,24 +218,73 @@ function ProdutoPage() {
                 </Dialog>
               </div>
               <div className="flex flex-wrap gap-2">
-                {sizes.map((s) => (
-                  <button key={s} onClick={() => setSize(s)} aria-pressed={size === s}
-                    className={`min-w-12 h-12 px-4 text-sm font-display border transition ${size === s ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-foreground"}`}>
-                    {s}
-                  </button>
-                ))}
+                {sizes.map((s) => {
+                  // find variant matching color+size to check its stock
+                  const v = node.variants.edges
+                    .map((e) => e.node)
+                    .find(
+                      (vv) =>
+                        (!color || vv.selectedOptions.some((o) => /cor|color/i.test(o.name) && o.value === color)) &&
+                        vv.selectedOptions.some((o) => /tama|size/i.test(o.name) && o.value === s)
+                    );
+                  const st = v ? stockMap[v.id] : undefined;
+                  const sizeOut =
+                    (v && st && !st.availableForSale) || (v && st?.quantityAvailable === 0) || (v && v.availableForSale === false);
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => setSize(s)}
+                      aria-pressed={size === s}
+                      disabled={!!sizeOut}
+                      title={sizeOut ? "Esgotado" : undefined}
+                      className={`relative min-w-12 h-12 px-4 text-sm font-display border transition ${
+                        size === s
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-foreground"
+                      } ${sizeOut ? "opacity-40 line-through cursor-not-allowed hover:border-border" : ""}`}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
+          {/* Stock indicator */}
+          {maxQty !== null && maxQty > 0 && maxQty <= 5 && (
+            <p className="mt-4 text-sm text-primary font-display">
+              Restam apenas {maxQty} {maxQty === 1 ? "unidade" : "unidades"} em estoque
+            </p>
+          )}
+          {isOutOfStock && (
+            <p className="mt-4 text-sm text-destructive font-display">Esta variação está esgotada</p>
+          )}
+
           {/* Qty + CTA */}
-          <div className="mt-8 flex items-center gap-3">
+          <div className="mt-6 flex items-center gap-3">
             <div className="flex items-center border border-border h-12">
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="w-12 h-full grid place-items-center hover:bg-background-soft" aria-label="Diminuir">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={qty <= 1}
+                className="w-12 h-full grid place-items-center hover:bg-background-soft disabled:opacity-40"
+                aria-label="Diminuir"
+              >
                 <Minus className="size-4" />
               </button>
               <span className="w-10 text-center font-display">{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} className="w-12 h-full grid place-items-center hover:bg-background-soft" aria-label="Aumentar">
+              <button
+                onClick={() => {
+                  if (maxQty !== null && qty >= maxQty) {
+                    toast.error(`Apenas ${maxQty} em estoque`);
+                    return;
+                  }
+                  setQty((q) => q + 1);
+                }}
+                disabled={isOutOfStock || (maxQty !== null && qty >= maxQty)}
+                className="w-12 h-full grid place-items-center hover:bg-background-soft disabled:opacity-40"
+                aria-label="Aumentar"
+              >
                 <Plus className="size-4" />
               </button>
             </div>
@@ -245,9 +294,9 @@ function ProdutoPage() {
           </div>
 
           <div className="mt-4">
-            <Button onClick={handleAddToCart} disabled={isLoading || !selectedVariant?.availableForSale} size="lg"
+            <Button onClick={handleAddToCart} disabled={isLoading || isOutOfStock || !selectedVariant} size="lg"
               className="w-full h-12 rounded-none bg-primary hover:bg-[var(--primary-hover)] text-primary-foreground font-display tracking-wide">
-              {isLoading ? <Loader2 className="size-4 animate-spin" /> : selectedVariant?.availableForSale === false ? "Indisponível" : "Adicionar à Sacola"}
+              {isLoading ? <Loader2 className="size-4 animate-spin" /> : isOutOfStock ? "Esgotado" : "Adicionar à Sacola"}
             </Button>
           </div>
 
