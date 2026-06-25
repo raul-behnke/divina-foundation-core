@@ -43,10 +43,16 @@ export function ProductCard({ product }: { product: ShopifyProduct }) {
               Plus
             </span>
           )}
-          <button aria-label="Favoritar"
-            onClick={(e) => { e.preventDefault(); toast.success("Adicionado aos favoritos"); }}
-            className="absolute bottom-3 right-3 bg-background/90 backdrop-blur p-2 opacity-0 group-hover:opacity-100 transition hover:text-primary">
-            <Heart className="size-4" />
+          <button aria-label={isFav ? "Remover dos favoritos" : "Favoritar"} aria-pressed={isFav}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleFav(product);
+              toast.success(isFav ? "Removido dos favoritos" : "Adicionado aos favoritos");
+            }}
+            className={`absolute bottom-3 right-3 backdrop-blur p-2 transition ${
+              isFav ? "bg-primary text-primary-foreground opacity-100" : "bg-background/90 opacity-0 group-hover:opacity-100 hover:text-primary"
+            }`}>
+            <Heart className="size-4" fill={isFav ? "currentColor" : "none"} />
           </button>
         </div>
         <div className="pt-4 pb-2">
