@@ -13,6 +13,7 @@ import { useCartSync } from "@/hooks/useCartSync";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import faviconAsset from "@/assets/favicon-divina.png.asset.json";
 
 function NotFoundComponent() {
   return (
@@ -74,9 +75,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-32x32.png" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-192x192.png" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-180x180.png" },
+      { rel: "icon", type: "image/png", href: faviconAsset.url },
+      { rel: "apple-touch-icon", href: faviconAsset.url },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" },
