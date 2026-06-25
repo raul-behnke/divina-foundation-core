@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { formatPrice } from "@/lib/shopify";
 import { getProductColors, getProductImages, isProductNew, isProductPlus } from "@/data/products";
+import { useWishlistStore } from "@/stores/wishlistStore";
 
 export function ProductCard({ product }: { product: ShopifyProduct }) {
   const images = getProductImages(product);
