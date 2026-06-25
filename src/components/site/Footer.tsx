@@ -36,9 +36,9 @@ export function Footer() {
           { label: "Guia de Medidas", to: "/guia-de-medidas" },
         ]} />
         <FooterCol title="Coleções" links={[
+          { label: "Lookbook", to: "/lookbook" },
           { label: "Vestidos", to: "/colecao/vestidos" },
           { label: "Alfaiataria", to: "/colecao/alfaiataria" },
-          { label: "Blusas & Camisas", to: "/colecao/blusas" },
           { label: "Plus Size", to: "/colecao/plus" },
         ]} />
       </div>

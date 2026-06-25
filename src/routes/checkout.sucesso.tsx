@@ -23,7 +23,7 @@ export const Route = createFileRoute("/checkout/sucesso")({
 
 function CheckoutSuccessPage() {
   const { order } = Route.useSearch();
-  const clearCart = useCartStore((s) => s.clear);
+  const clearCart = useCartStore((s) => s.clearCart);
 
   useEffect(() => {
     clearCart();
