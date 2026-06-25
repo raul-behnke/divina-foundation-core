@@ -197,12 +197,15 @@ export function Header() {
             <input
               ref={searchInputRef}
               type="search"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Buscar produtos, coleções, tamanhos…"
               className="flex-1 min-w-0 bg-transparent border-0 outline-none text-base placeholder:text-muted-foreground"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  toast.success("Busca em breve");
+                  const q = searchValue.trim();
                   setSearchOpen(false);
+                  navigate({ to: "/busca", search: { q } });
                 }
               }}
             />
