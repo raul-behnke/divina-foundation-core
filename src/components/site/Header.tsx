@@ -92,6 +92,7 @@ export function Header() {
   }, [searchOpen]);
 
   const totalItems = useCartStore((s) => s.items.reduce((a, i) => a + i.quantity, 0));
+  const wishCount = useWishlistStore((s) => s.items.length);
 
   return (
     <header
