@@ -130,8 +130,13 @@ export function Header() {
           >
             <Search className="size-5" strokeWidth={1.5} />
           </button>
-          <Link to="/favoritos" aria-label="Lista de desejos" className={ICON_BTN}>
+          <Link to="/favoritos" aria-label={`Lista de desejos${wishCount ? `, ${wishCount}` : ""}`} className={`${ICON_BTN} relative`}>
             <Heart className="size-5" strokeWidth={1.5} />
+            {wishCount > 0 && (
+              <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 rounded-full p-0 flex items-center justify-center text-[10px] bg-primary text-primary-foreground">
+                {wishCount}
+              </Badge>
+            )}
           </Link>
           <Link to="/conta" aria-label="Minha conta" className={ICON_BTN}>
             <User className="size-5" strokeWidth={1.5} />
