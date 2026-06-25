@@ -305,7 +305,7 @@ export async function fetchCart(cartId: string) {
 
 /* ============ STOCK / REAL-TIME AVAILABILITY ============ */
 
-const VARIANTS_STOCK_QUERY = `
+const VARIANTS_STOCK_QUERY_BASIC = `
   query VariantsStock($ids: [ID!]!) {
     nodes(ids: $ids) {
       ... on ProductVariant {
@@ -317,27 +317,60 @@ const VARIANTS_STOCK_QUERY = `
   }
 `;
 
+const VARIANTS_STOCK_QUERY_FULL = `
+  query VariantsStockFull($ids: [ID!]!) {
+    nodes(ids: $ids) {
+      ... on ProductVariant {
+        id
+        availableForSale
+        currentlyNotInStock
+        quantityAvailable
+      }
+    }
+  }
+`;
+
 export interface VariantStock {
   id: string;
   availableForSale: boolean;
-  /** Always null unless the Storefront token has unauthenticated_read_product_inventory */
+  /** Null if the Storefront token lacks unauthenticated_read_product_inventory */
   quantityAvailable: number | null;
   currentlyNotInStock: boolean;
 }
 
+// Cache: once we discover the scope is missing, stop retrying the full query.
+let stockScopeAvailable: boolean | null = null;
+
 export async function fetchVariantsStock(ids: string[]): Promise<Record<string, VariantStock>> {
   if (ids.length === 0) return {};
-  const data = await storefrontApiRequest<{ nodes: Array<VariantStock | null> }>(
-    VARIANTS_STOCK_QUERY,
-    { ids }
-  );
+
+  const tryFull = stockScopeAvailable !== false;
+  let nodes: any[] | null = null;
+
+  if (tryFull) {
+    try {
+      const data = await storefrontApiRequest<{ nodes: any[] }>(VARIANTS_STOCK_QUERY_FULL, { ids });
+      nodes = data?.data?.nodes ?? [];
+      stockScopeAvailable = true;
+    } catch (e) {
+      stockScopeAvailable = false;
+      nodes = null;
+    }
+  }
+
+  if (!nodes) {
+    const data = await storefrontApiRequest<{ nodes: any[] }>(VARIANTS_STOCK_QUERY_BASIC, { ids });
+    nodes = data?.data?.nodes ?? [];
+  }
+
   const map: Record<string, VariantStock> = {};
-  for (const node of data?.data?.nodes ?? []) {
+  for (const node of nodes) {
     if (node && node.id) {
       map[node.id] = {
         id: node.id,
         availableForSale: !!node.availableForSale,
-        quantityAvailable: null,
+        quantityAvailable:
+          typeof node.quantityAvailable === "number" ? node.quantityAvailable : null,
         currentlyNotInStock: !!node.currentlyNotInStock,
       };
     }
