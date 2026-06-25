@@ -1,36 +1,111 @@
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const HERO = "https://divinamulher.com.br/wp-content/uploads/2025/03/15330629596-fotografia-de-estudio-divina-mulher-0981.jpeg";
+type Slide = { src: string; alt: string };
+
+const SLIDES: Slide[] = [
+  {
+    src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=80",
+    alt: "Modelo com look de alfaiataria feminina em editorial de moda",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2000&q=80",
+    alt: "Mulher elegante com vestido contemporâneo em cenário minimalista",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=2000&q=80",
+    alt: "Editorial de moda feminina premium com luz natural",
+  },
+];
+
+const AUTOPLAY_MS = 5000;
 
 export function HeroBanner() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const total = SLIDES.length;
+  const goTo = useCallback((i: number) => setIndex((i + total) % total), [total]);
+  const next = useCallback(() => goTo(index + 1), [goTo, index]);
+  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
+
+  const regionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % total), AUTOPLAY_MS);
+    return () => window.clearInterval(id);
+  }, [paused, total]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+  };
+
   return (
-    <section className="relative bg-background-soft" aria-label="Destaque">
-      <div className="grid lg:grid-cols-2 min-h-[80vh] lg:min-h-[88vh]">
-        <div className="order-2 lg:order-1 flex items-center px-6 md:px-12 lg:px-16 xl:px-24 py-12 lg:py-0">
-          <div className="max-w-xl">
-            <p className="text-xs tracking-[0.25em] uppercase text-primary font-display mb-5">
-              Nova Coleção · 18 anos
-            </p>
-            <h1 className="font-display text-3xl md:text-5xl lg:text-6xl leading-[1.05] text-foreground">
-              Alfaiataria que valoriza sua essência.
-            </h1>
-            <p className="mt-5 md:mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-md">
-              Peças exclusivas para mulheres que buscam elegância em cada detalhe.
-            </p>
-            <div className="mt-8 md:mt-10 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-primary hover:bg-[var(--primary-hover)] text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
-                <Link to="/colecao/vestidos">Conhecer Coleção</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-foreground text-foreground hover:bg-foreground hover:text-background px-8 h-12 rounded-none font-display tracking-wide">
-                <Link to="/colecao/novidades">Novidades</Link>
-              </Button>
-            </div>
+    <section
+      ref={regionRef}
+      aria-label="Carrossel de destaques"
+      aria-roledescription="carousel"
+      tabIndex={0}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={onKeyDown}
+      className="relative w-full overflow-hidden bg-background-soft outline-none h-[60vh] md:h-[80vh]"
+    >
+      <div
+        aria-live="polite"
+        className="relative h-full w-full"
+      >
+        {SLIDES.map((slide, i) => (
+          <div
+            key={slide.src}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} de ${total}`}
+            aria-hidden={i !== index}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${i === index ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          >
+            <img
+              src={slide.src}
+              alt={slide.alt}
+              loading={i === 0 ? "eager" : "lazy"}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
           </div>
-        </div>
-        <div className="order-1 lg:order-2 relative aspect-[4/5] lg:aspect-auto">
-          <img src={HERO} alt="Editorial Divina Mulher — coleção de alfaiataria" className="absolute inset-0 w-full h-full object-cover" />
-        </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={prev}
+        aria-label="Slide anterior"
+        className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-10 grid place-items-center size-10 md:size-12 bg-white/80 hover:bg-white text-foreground transition-colors backdrop-blur-sm"
+      >
+        <ChevronLeft className="size-5 md:size-6" />
+      </button>
+      <button
+        type="button"
+        onClick={next}
+        aria-label="Próximo slide"
+        className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-10 grid place-items-center size-10 md:size-12 bg-white/80 hover:bg-white text-foreground transition-colors backdrop-blur-sm"
+      >
+        <ChevronRight className="size-5 md:size-6" />
+      </button>
+
+      <div className="absolute bottom-5 md:bottom-8 left-0 right-0 z-10 flex justify-center gap-2">
+        {SLIDES.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-label={`Ir para slide ${i + 1}`}
+            aria-current={i === index}
+            className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-white" : "w-2.5 bg-white/60 hover:bg-white/80"}`}
+          />
+        ))}
       </div>
     </section>
   );
