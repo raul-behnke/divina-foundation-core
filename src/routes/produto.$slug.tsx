@@ -89,6 +89,27 @@ function ProdutoPage() {
     );
   }, [node, color, size]);
 
+  // Real-time stock per variant (refetch on focus to stay fresh)
+  const variantIds = useMemo(() => node.variants.edges.map((e) => e.node.id), [node]);
+  const { data: stockMap = {} } = useQuery({
+    queryKey: ["variant-stock", node.id],
+    queryFn: () => fetchVariantsStock(variantIds),
+    refetchOnWindowFocus: true,
+    staleTime: 30_000,
+  });
+
+  const variantStock = selectedVariant ? stockMap[selectedVariant.id] : undefined;
+  const maxQty = variantStock?.quantityAvailable ?? null;
+  const isOutOfStock =
+    (variantStock && !variantStock.availableForSale) ||
+    selectedVariant?.availableForSale === false ||
+    maxQty === 0;
+
+  // Clamp qty when stock or variant changes
+  if (maxQty !== null && maxQty > 0 && qty > maxQty) {
+    setTimeout(() => setQty(maxQty), 0);
+  }
+
   const { data: relatedProducts = [] } = useQuery({
     queryKey: ["products", "related", node.productType],
     queryFn: () => fetchProducts(node.productType ? `product_type:${node.productType}` : undefined, 8),
@@ -103,6 +124,14 @@ function ProdutoPage() {
     }
     if (!selectedVariant) {
       toast.error("Variação indisponível");
+      return;
+    }
+    if (isOutOfStock) {
+      toast.error("Produto esgotado");
+      return;
+    }
+    if (maxQty !== null && qty > maxQty) {
+      toast.error(`Apenas ${maxQty} em estoque`);
       return;
     }
     await addItem({
