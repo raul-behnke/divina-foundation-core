@@ -311,7 +311,6 @@ const VARIANTS_STOCK_QUERY = `
       ... on ProductVariant {
         id
         availableForSale
-        quantityAvailable
         currentlyNotInStock
       }
     }
@@ -321,7 +320,7 @@ const VARIANTS_STOCK_QUERY = `
 export interface VariantStock {
   id: string;
   availableForSale: boolean;
-  /** null when the merchant doesn't expose inventory quantities via Storefront API */
+  /** Always null unless the Storefront token has unauthenticated_read_product_inventory */
   quantityAvailable: number | null;
   currentlyNotInStock: boolean;
 }
@@ -338,12 +337,12 @@ export async function fetchVariantsStock(ids: string[]): Promise<Record<string, 
       map[node.id] = {
         id: node.id,
         availableForSale: !!node.availableForSale,
-        quantityAvailable:
-          typeof node.quantityAvailable === "number" ? node.quantityAvailable : null,
+        quantityAvailable: null,
         currentlyNotInStock: !!node.currentlyNotInStock,
       };
     }
   }
   return map;
 }
+
 
