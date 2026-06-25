@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Heart, Search, Menu, X, User, ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -12,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
+import { useWishlistStore } from "@/stores/wishlistStore";
 import { formatPrice } from "@/lib/shopify";
 
 import logoAsset from "@/assets/logo-divina.png.asset.json";
@@ -70,7 +70,8 @@ export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const handleSoon = () => toast.success("Funcionalidade em breve");
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
   // sticky shadow on scroll
   useEffect(() => {
@@ -91,6 +92,7 @@ export function Header() {
   }, [searchOpen]);
 
   const totalItems = useCartStore((s) => s.items.reduce((a, i) => a + i.quantity, 0));
+  const wishCount = useWishlistStore((s) => s.items.length);
 
   return (
     <header
@@ -128,12 +130,17 @@ export function Header() {
           >
             <Search className="size-5" strokeWidth={1.5} />
           </button>
-          <button aria-label="Lista de desejos" onClick={handleSoon} className={ICON_BTN}>
+          <Link to="/favoritos" aria-label={`Lista de desejos${wishCount ? `, ${wishCount}` : ""}`} className={`${ICON_BTN} relative`}>
             <Heart className="size-5" strokeWidth={1.5} />
-          </button>
-          <button aria-label="Minha conta" onClick={handleSoon} className={ICON_BTN}>
+            {wishCount > 0 && (
+              <Badge className="absolute -top-0.5 -right-0.5 h-4 min-w-4 rounded-full p-0 flex items-center justify-center text-[10px] bg-primary text-primary-foreground">
+                {wishCount}
+              </Badge>
+            )}
+          </Link>
+          <Link to="/conta" aria-label="Minha conta" className={ICON_BTN}>
             <User className="size-5" strokeWidth={1.5} />
-          </button>
+          </Link>
           <button
             aria-label={`Sacola${totalItems ? `, ${totalItems} ${totalItems === 1 ? "item" : "itens"}` : ""}`}
             onClick={() => setCartOpen(true)}
@@ -196,12 +203,15 @@ export function Header() {
             <input
               ref={searchInputRef}
               type="search"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Buscar produtos, coleções, tamanhos…"
               className="flex-1 min-w-0 bg-transparent border-0 outline-none text-base placeholder:text-muted-foreground"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  toast.success("Busca em breve");
+                  const q = searchValue.trim();
                   setSearchOpen(false);
+                  navigate({ to: "/busca", search: { q } });
                 }
               }}
             />
@@ -380,6 +390,13 @@ function CartSideDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (
                     </>
                   )}
                 </Button>
+                <Link
+                  to="/carrinho"
+                  onClick={() => onOpenChange(false)}
+                  className="block text-center text-sm text-muted-foreground hover:text-primary underline underline-offset-4"
+                >
+                  Ver sacola completa
+                </Link>
               </div>
             </>
           )}
