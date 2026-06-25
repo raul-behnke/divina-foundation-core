@@ -390,6 +390,13 @@ function CartSideDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (
                     </>
                   )}
                 </Button>
+                <Link
+                  to="/carrinho"
+                  onClick={() => onOpenChange(false)}
+                  className="block text-center text-sm text-muted-foreground hover:text-primary underline underline-offset-4"
+                >
+                  Ver sacola completa
+                </Link>
               </div>
             </>
           )}
