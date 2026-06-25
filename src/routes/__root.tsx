@@ -105,8 +105,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <CartSyncBridge />
       <Outlet />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
+}
+
+function CartSyncBridge() {
+  // dynamic import not needed; hook is safe on client
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { useCartSync } = require("@/hooks/useCartSync");
+  useCartSync();
+  return null;
 }

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { HeroBanner } from "@/components/site/HeroBanner";
 import { BenefitBar } from "@/components/site/BenefitBar";
@@ -8,7 +9,9 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { TestimonialCard } from "@/components/site/TestimonialCard";
 import { NewsletterSection } from "@/components/site/NewsletterSection";
 import { Button } from "@/components/ui/button";
-import { getNew, getPlus, products } from "@/data/products";
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { isProductNew, isProductPlus } from "@/data/products";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,8 +33,14 @@ const TESTIMONIALS = [
 ];
 
 function HomePage() {
-  const novidades = getNew().slice(0, 8);
-  const plus = getPlus();
+  const { data: allProducts = [], isLoading } = useQuery({
+    queryKey: ["products", "all"],
+    queryFn: () => fetchProducts(),
+  });
+
+  const novidades = allProducts.filter(isProductNew).slice(0, 8);
+  const novidadesDisplay = novidades.length > 0 ? novidades : allProducts.slice(0, 8);
+  const plus = allProducts.filter(isProductPlus).slice(0, 4);
 
   return (
     <SiteLayout>
@@ -44,8 +53,8 @@ function HomePage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <CategoryCard title="Vestidos" to="/colecao/vestidos" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/VESTIDOS.png" alt="Vestidos Divina Mulher" />
           <CategoryCard title="Alfaiataria" to="/colecao/alfaiataria" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/BLAZERS.png" alt="Alfaiataria Divina Mulher" />
-          <CategoryCard title="Blusas" to="/colecao/blusas" image={products[6].images[0]} alt="Blusas e camisas femininas" />
-          <CategoryCard title="Plus Size" to="/colecao/plus" image={products[8].images[0]} alt="Coleção Plus Size — modelo plus-size em alfaiataria" />
+          <CategoryCard title="Blusas" to="/colecao/blusas" image="https://divinamulher.com.br/wp-content/uploads/2025/12/15336181427-estudio-divina-mulher-21-03-2025-0348.jpeg" alt="Blusas e camisas femininas" />
+          <CategoryCard title="Plus Size" to="/colecao/plus" image="https://divinamulher.com.br/wp-content/uploads/2025/03/15330629596-fotografia-de-estudio-divina-mulher-0981.jpeg" alt="Coleção Plus Size" />
         </div>
       </section>
 
@@ -53,13 +62,11 @@ function HomePage() {
       <section className="container-dm py-12 md:py-20">
         <div className="flex items-end justify-between mb-8 md:mb-12">
           <SectionTitle eyebrow="Recém-chegados" title="Novidades" align="left" />
-          <Link to="/colecao/vestidos" className="hidden md:inline-block text-sm font-display tracking-wide text-primary hover:underline underline-offset-4">
+          <Link to="/colecao/$slug" params={{ slug: "novidades" }} className="hidden md:inline-block text-sm font-display tracking-wide text-primary hover:underline underline-offset-4">
             Ver tudo →
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-          {novidades.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+        <ProductGrid loading={isLoading} products={novidadesDisplay} />
       </section>
 
       {/* Banner institucional */}
@@ -84,17 +91,17 @@ function HomePage() {
       </section>
 
       {/* Plus Size */}
-      <section className="container-dm py-16 md:py-24">
-        <SectionTitle eyebrow="Plus Size" title="Alfaiataria que valoriza diferentes corpos" description="Modelagens desenvolvidas para curvas reais, sem abrir mão da estrutura e do refinamento." align="left" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-          {plus.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
-        <div className="mt-10 text-center">
-          <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
-            <Link to="/colecao/plus">Ver Plus Size</Link>
-          </Button>
-        </div>
-      </section>
+      {(isLoading || plus.length > 0) && (
+        <section className="container-dm py-16 md:py-24">
+          <SectionTitle eyebrow="Plus Size" title="Alfaiataria que valoriza diferentes corpos" description="Modelagens desenvolvidas para curvas reais, sem abrir mão da estrutura e do refinamento." align="left" />
+          <ProductGrid loading={isLoading} products={plus} columns={4} />
+          <div className="mt-10 text-center">
+            <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
+              <Link to="/colecao/$slug" params={{ slug: "plus" }}>Ver Plus Size</Link>
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* Sobre — resumo */}
       <section className="container-dm py-12 md:py-16">
@@ -126,5 +133,32 @@ function HomePage() {
 
       <NewsletterSection />
     </SiteLayout>
+  );
+}
+
+function ProductGrid({ products, loading, columns = 4 }: { products: ShopifyProduct[]; loading: boolean; columns?: 3 | 4 }) {
+  const cls = columns === 4
+    ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6"
+    : "grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-6";
+
+  if (loading) {
+    return (
+      <div className="py-16 flex justify-center">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+  if (products.length === 0) {
+    return (
+      <div className="py-12 text-center border border-dashed border-border">
+        <p className="font-display text-lg text-foreground">Nenhum produto cadastrado ainda</p>
+        <p className="text-sm text-muted-foreground mt-2">Adicione produtos pela Shopify para vê-los aqui.</p>
+      </div>
+    );
+  }
+  return (
+    <div className={cls}>
+      {products.map((p) => <ProductCard key={p.node.id} product={p} />)}
+    </div>
   );
 }
