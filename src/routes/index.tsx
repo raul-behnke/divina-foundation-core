@@ -39,17 +39,34 @@ function HomePage() {
     queryFn: () => fetchProducts(),
   });
 
-  const novidades = allProducts.filter(isProductNew).slice(0, 8);
-  const novidadesDisplay = novidades.length > 0 ? novidades : allProducts.slice(0, 8);
-  const destaques = allProducts.slice(0, 10);
-  const plus = allProducts.filter(isProductPlus).slice(0, 4);
+  const lancamentos = (allProducts.filter(isProductNew).length > 0
+    ? allProducts.filter(isProductNew)
+    : allProducts
+  ).slice(0, 10);
+  const tendencias = allProducts.slice(0, 10);
+  const maisVendidos = allProducts.slice(0, 10);
 
   return (
     <SiteLayout>
+      {/* 1. Carrossel de Banners */}
       <HeroBanner />
-      <BenefitBar />
 
-      {/* Categorias */}
+      {/* 2. Lançamentos */}
+      <section className="container-dm py-12 md:py-20">
+        <div className="flex items-end justify-between mb-8 md:mb-12">
+          <SectionTitle eyebrow="Recém-chegados" title="Lançamentos" align="left" />
+          <Link to="/colecao/$slug" params={{ slug: "novidades" }} className="hidden md:inline-block text-sm font-display tracking-wide text-primary hover:underline underline-offset-4">
+            Ver tudo →
+          </Link>
+        </div>
+        {isLoading ? (
+          <div className="py-16 flex justify-center"><Loader2 className="size-6 animate-spin text-primary" /></div>
+        ) : (
+          <ProductCarousel products={lancamentos} ariaLabel="Lançamentos" />
+        )}
+      </section>
+
+      {/* 3. Coleções (Categorias) */}
       <section className="container-dm py-16 md:py-24">
         <SectionTitle eyebrow="Coleções" title="Encontre seu próximo favorito" description="Selecionadas para mulheres que valorizam alfaiataria, conforto e atitude." />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -60,34 +77,31 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Novidades */}
+      {/* 4. Tendências */}
       <section className="container-dm py-12 md:py-20">
         <div className="flex items-end justify-between mb-8 md:mb-12">
-          <SectionTitle eyebrow="Recém-chegados" title="Novidades" align="left" />
-          <Link to="/colecao/$slug" params={{ slug: "novidades" }} className="hidden md:inline-block text-sm font-display tracking-wide text-primary hover:underline underline-offset-4">
-            Ver tudo →
-          </Link>
+          <SectionTitle eyebrow="Em alta" title="Tendências" align="left" />
         </div>
-        <ProductGrid loading={isLoading} products={novidadesDisplay} />
+        {isLoading ? (
+          <div className="py-16 flex justify-center"><Loader2 className="size-6 animate-spin text-primary" /></div>
+        ) : (
+          <ProductCarousel products={tendencias} ariaLabel="Tendências" />
+        )}
       </section>
 
-      {/* Em Destaque — carrossel reutilizando ProductCard */}
-      {(isLoading || destaques.length > 0) && (
-        <section className="container-dm py-12 md:py-20">
-          <div className="flex items-end justify-between mb-8 md:mb-12">
-            <SectionTitle eyebrow="Selecionados" title="Em destaque" align="left" />
-          </div>
-          {isLoading ? (
-            <div className="py-16 flex justify-center">
-              <Loader2 className="size-6 animate-spin text-primary" />
-            </div>
-          ) : (
-            <ProductCarousel products={destaques} ariaLabel="Produtos em destaque" />
-          )}
-        </section>
-      )}
+      {/* 5. Mais vendidos */}
+      <section className="container-dm py-12 md:py-20">
+        <div className="flex items-end justify-between mb-8 md:mb-12">
+          <SectionTitle eyebrow="Favoritos" title="Mais vendidos" align="left" />
+        </div>
+        {isLoading ? (
+          <div className="py-16 flex justify-center"><Loader2 className="size-6 animate-spin text-primary" /></div>
+        ) : (
+          <ProductCarousel products={maisVendidos} ariaLabel="Mais vendidos" />
+        )}
+      </section>
 
-      {/* Banner institucional */}
+      {/* 6. Desde 2007 — 18 anos */}
       <section className="relative bg-background-soft py-20 md:py-28 monogram-bg overflow-hidden">
         <div className="container-dm grid lg:grid-cols-2 gap-10 items-center">
           <div>
@@ -99,7 +113,7 @@ function HomePage() {
               Nascemos em Joinville com uma convicção: alfaiataria não é privilégio — é linguagem. E toda mulher merece falar essa língua, no seu corpo, no seu tempo.
             </p>
             <Button asChild size="lg" className="mt-8 bg-primary hover:bg-[var(--primary-hover)] text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
-              <Link to="/sobre">Nossa história</Link>
+              <Link to="/sobre">Conheça a Divina Mulher</Link>
             </Button>
           </div>
           <div className="aspect-[4/5] overflow-hidden">
@@ -108,40 +122,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Plus Size */}
-      {(isLoading || plus.length > 0) && (
-        <section className="container-dm py-16 md:py-24">
-          <SectionTitle eyebrow="Plus Size" title="Alfaiataria que valoriza diferentes corpos" description="Modelagens desenvolvidas para curvas reais, sem abrir mão da estrutura e do refinamento." align="left" />
-          <ProductGrid loading={isLoading} products={plus} columns={4} />
-          <div className="mt-10 text-center">
-            <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 h-12 rounded-none font-display tracking-wide">
-              <Link to="/colecao/$slug" params={{ slug: "plus" }}>Ver Plus Size</Link>
-            </Button>
-          </div>
-        </section>
-      )}
-
-      {/* Sobre — resumo */}
-      <section className="container-dm py-12 md:py-16">
-        <div className="bg-foreground text-background py-16 md:py-24 px-6 md:px-16 grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <p className="text-xs tracking-[0.25em] uppercase text-accent-peach font-display mb-3">Sobre a Marca</p>
-            <h2 className="font-display text-3xl md:text-4xl leading-tight">
-              Joinville no DNA, atelier no detalhe.
-            </h2>
-          </div>
-          <div>
-            <p className="text-base md:text-lg opacity-85 leading-relaxed">
-              Cada coleção é pensada para quem entende que a roupa certa muda o dia. Alfaiataria contemporânea, modelagens generosas e tecidos selecionados — para mulheres reais, vivendo vidas reais.
-            </p>
-            <Link to="/sobre" className="inline-block mt-6 text-sm font-display tracking-wide text-accent-peach hover:underline underline-offset-4">
-              Conheça nossa história →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Depoimentos */}
+      {/* 7. Quem usa, conta — Mulheres Divina */}
       <section className="container-dm py-16 md:py-24">
         <SectionTitle eyebrow="Quem usa, conta" title="Mulheres Divina" />
         <div className="grid md:grid-cols-3 gap-5 md:gap-6">
@@ -149,6 +130,7 @@ function HomePage() {
         </div>
       </section>
 
+      {/* 8. Clube VIP */}
       <NewsletterSection />
     </SiteLayout>
   );
