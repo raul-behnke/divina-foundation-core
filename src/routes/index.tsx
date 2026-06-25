@@ -6,6 +6,7 @@ import { BenefitBar } from "@/components/site/BenefitBar";
 import { SectionTitle } from "@/components/site/SectionTitle";
 import { CategoryCard } from "@/components/site/CategoryCard";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ProductCarousel } from "@/components/site/ProductCarousel";
 import { TestimonialCard } from "@/components/site/TestimonialCard";
 import { NewsletterSection } from "@/components/site/NewsletterSection";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ function HomePage() {
 
   const novidades = allProducts.filter(isProductNew).slice(0, 8);
   const novidadesDisplay = novidades.length > 0 ? novidades : allProducts.slice(0, 8);
+  const destaques = allProducts.slice(0, 10);
   const plus = allProducts.filter(isProductPlus).slice(0, 4);
 
   return (
@@ -68,6 +70,22 @@ function HomePage() {
         </div>
         <ProductGrid loading={isLoading} products={novidadesDisplay} />
       </section>
+
+      {/* Em Destaque — carrossel reutilizando ProductCard */}
+      {(isLoading || destaques.length > 0) && (
+        <section className="container-dm py-12 md:py-20">
+          <div className="flex items-end justify-between mb-8 md:mb-12">
+            <SectionTitle eyebrow="Selecionados" title="Em destaque" align="left" />
+          </div>
+          {isLoading ? (
+            <div className="py-16 flex justify-center">
+              <Loader2 className="size-6 animate-spin text-primary" />
+            </div>
+          ) : (
+            <ProductCarousel products={destaques} ariaLabel="Produtos em destaque" />
+          )}
+        </section>
+      )}
 
       {/* Banner institucional */}
       <section className="relative bg-background-soft py-20 md:py-28 monogram-bg overflow-hidden">
