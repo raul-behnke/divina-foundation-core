@@ -14,6 +14,8 @@ export function ProductCard({ product }: { product: ShopifyProduct }) {
   const isPlus = isProductPlus(product);
   const installments = 5;
   const priceNum = parseFloat(price.amount);
+  const isFav = useWishlistStore((s) => s.has(product.node.id));
+  const toggleFav = useWishlistStore((s) => s.toggle);
 
   return (
     <article className="group">
