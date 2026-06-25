@@ -11,14 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrocasEDevolucoesRouteImport } from './routes/trocas-e-devolucoes'
 import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as TendenciasRouteImport } from './routes/tendencias'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as NovidadesRouteImport } from './routes/novidades'
+import { Route as NossaHistoriaRouteImport } from './routes/nossa-historia'
+import { Route as MaisVendidosRouteImport } from './routes/mais-vendidos'
+import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as GuiaDeMedidasRouteImport } from './routes/guia-de-medidas'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EntregaEFreteRouteImport } from './routes/entrega-e-frete'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ContaRouteImport } from './routes/conta'
+import { Route as ColecoesRouteImport } from './routes/colecoes'
+import { Route as ClubeVipRouteImport } from './routes/clube-vip'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as IndexRouteImport } from './routes/index'
@@ -42,6 +49,11 @@ const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
   path: '/termos-de-uso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TendenciasRoute = TendenciasRouteImport.update({
+  id: '/tendencias',
+  path: '/tendencias',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -50,6 +62,26 @@ const SobreRoute = SobreRouteImport.update({
 const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
   id: '/politica-de-privacidade',
   path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovidadesRoute = NovidadesRouteImport.update({
+  id: '/novidades',
+  path: '/novidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NossaHistoriaRoute = NossaHistoriaRouteImport.update({
+  id: '/nossa-historia',
+  path: '/nossa-historia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MaisVendidosRoute = MaisVendidosRouteImport.update({
+  id: '/mais-vendidos',
+  path: '/mais-vendidos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LojasRoute = LojasRouteImport.update({
+  id: '/lojas',
+  path: '/lojas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuiaDeMedidasRoute = GuiaDeMedidasRouteImport.update({
@@ -80,6 +112,16 @@ const ContatoRoute = ContatoRouteImport.update({
 const ContaRoute = ContaRouteImport.update({
   id: '/conta',
   path: '/conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ColecoesRoute = ColecoesRouteImport.update({
+  id: '/colecoes',
+  path: '/colecoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubeVipRoute = ClubeVipRouteImport.update({
+  id: '/clube-vip',
+  path: '/clube-vip',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarrinhoRoute = CarrinhoRouteImport.update({
@@ -147,14 +189,21 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/busca': typeof BuscaRoute
   '/carrinho': typeof CarrinhoRoute
+  '/clube-vip': typeof ClubeVipRoute
+  '/colecoes': typeof ColecoesRoute
   '/conta': typeof ContaRouteWithChildren
   '/contato': typeof ContatoRoute
   '/entrega-e-frete': typeof EntregaEFreteRoute
   '/faq': typeof FaqRoute
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
+  '/lojas': typeof LojasRoute
+  '/mais-vendidos': typeof MaisVendidosRoute
+  '/nossa-historia': typeof NossaHistoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
+  '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
@@ -171,13 +220,20 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/busca': typeof BuscaRoute
   '/carrinho': typeof CarrinhoRoute
+  '/clube-vip': typeof ClubeVipRoute
+  '/colecoes': typeof ColecoesRoute
   '/contato': typeof ContatoRoute
   '/entrega-e-frete': typeof EntregaEFreteRoute
   '/faq': typeof FaqRoute
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
+  '/lojas': typeof LojasRoute
+  '/mais-vendidos': typeof MaisVendidosRoute
+  '/nossa-historia': typeof NossaHistoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
+  '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
@@ -195,14 +251,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/busca': typeof BuscaRoute
   '/carrinho': typeof CarrinhoRoute
+  '/clube-vip': typeof ClubeVipRoute
+  '/colecoes': typeof ColecoesRoute
   '/conta': typeof ContaRouteWithChildren
   '/contato': typeof ContatoRoute
   '/entrega-e-frete': typeof EntregaEFreteRoute
   '/faq': typeof FaqRoute
   '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
+  '/lojas': typeof LojasRoute
+  '/mais-vendidos': typeof MaisVendidosRoute
+  '/nossa-historia': typeof NossaHistoriaRoute
+  '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
+  '/tendencias': typeof TendenciasRoute
   '/termos-de-uso': typeof TermosDeUsoRoute
   '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
@@ -221,14 +284,21 @@ export interface FileRouteTypes {
     | '/'
     | '/busca'
     | '/carrinho'
+    | '/clube-vip'
+    | '/colecoes'
     | '/conta'
     | '/contato'
     | '/entrega-e-frete'
     | '/faq'
     | '/favoritos'
     | '/guia-de-medidas'
+    | '/lojas'
+    | '/mais-vendidos'
+    | '/nossa-historia'
+    | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
+    | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
     | '/colecao/$slug'
@@ -245,13 +315,20 @@ export interface FileRouteTypes {
     | '/'
     | '/busca'
     | '/carrinho'
+    | '/clube-vip'
+    | '/colecoes'
     | '/contato'
     | '/entrega-e-frete'
     | '/faq'
     | '/favoritos'
     | '/guia-de-medidas'
+    | '/lojas'
+    | '/mais-vendidos'
+    | '/nossa-historia'
+    | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
+    | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
     | '/colecao/$slug'
@@ -268,14 +345,21 @@ export interface FileRouteTypes {
     | '/'
     | '/busca'
     | '/carrinho'
+    | '/clube-vip'
+    | '/colecoes'
     | '/conta'
     | '/contato'
     | '/entrega-e-frete'
     | '/faq'
     | '/favoritos'
     | '/guia-de-medidas'
+    | '/lojas'
+    | '/mais-vendidos'
+    | '/nossa-historia'
+    | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
+    | '/tendencias'
     | '/termos-de-uso'
     | '/trocas-e-devolucoes'
     | '/colecao/$slug'
@@ -293,14 +377,21 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuscaRoute: typeof BuscaRoute
   CarrinhoRoute: typeof CarrinhoRoute
+  ClubeVipRoute: typeof ClubeVipRoute
+  ColecoesRoute: typeof ColecoesRoute
   ContaRoute: typeof ContaRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   EntregaEFreteRoute: typeof EntregaEFreteRoute
   FaqRoute: typeof FaqRoute
   FavoritosRoute: typeof FavoritosRoute
   GuiaDeMedidasRoute: typeof GuiaDeMedidasRoute
+  LojasRoute: typeof LojasRoute
+  MaisVendidosRoute: typeof MaisVendidosRoute
+  NossaHistoriaRoute: typeof NossaHistoriaRoute
+  NovidadesRoute: typeof NovidadesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SobreRoute: typeof SobreRoute
+  TendenciasRoute: typeof TendenciasRoute
   TermosDeUsoRoute: typeof TermosDeUsoRoute
   TrocasEDevolucoesRoute: typeof TrocasEDevolucoesRoute
   ColecaoSlugRoute: typeof ColecaoSlugRoute
@@ -323,6 +414,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosDeUsoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tendencias': {
+      id: '/tendencias'
+      path: '/tendencias'
+      fullPath: '/tendencias'
+      preLoaderRoute: typeof TendenciasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -335,6 +433,34 @@ declare module '@tanstack/react-router' {
       path: '/politica-de-privacidade'
       fullPath: '/politica-de-privacidade'
       preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/novidades': {
+      id: '/novidades'
+      path: '/novidades'
+      fullPath: '/novidades'
+      preLoaderRoute: typeof NovidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nossa-historia': {
+      id: '/nossa-historia'
+      path: '/nossa-historia'
+      fullPath: '/nossa-historia'
+      preLoaderRoute: typeof NossaHistoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mais-vendidos': {
+      id: '/mais-vendidos'
+      path: '/mais-vendidos'
+      fullPath: '/mais-vendidos'
+      preLoaderRoute: typeof MaisVendidosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lojas': {
+      id: '/lojas'
+      path: '/lojas'
+      fullPath: '/lojas'
+      preLoaderRoute: typeof LojasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guia-de-medidas': {
@@ -377,6 +503,20 @@ declare module '@tanstack/react-router' {
       path: '/conta'
       fullPath: '/conta'
       preLoaderRoute: typeof ContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/colecoes': {
+      id: '/colecoes'
+      path: '/colecoes'
+      fullPath: '/colecoes'
+      preLoaderRoute: typeof ColecoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clube-vip': {
+      id: '/clube-vip'
+      path: '/clube-vip'
+      fullPath: '/clube-vip'
+      preLoaderRoute: typeof ClubeVipRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carrinho': {
@@ -492,14 +632,21 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuscaRoute: BuscaRoute,
   CarrinhoRoute: CarrinhoRoute,
+  ClubeVipRoute: ClubeVipRoute,
+  ColecoesRoute: ColecoesRoute,
   ContaRoute: ContaRouteWithChildren,
   ContatoRoute: ContatoRoute,
   EntregaEFreteRoute: EntregaEFreteRoute,
   FaqRoute: FaqRoute,
   FavoritosRoute: FavoritosRoute,
   GuiaDeMedidasRoute: GuiaDeMedidasRoute,
+  LojasRoute: LojasRoute,
+  MaisVendidosRoute: MaisVendidosRoute,
+  NossaHistoriaRoute: NossaHistoriaRoute,
+  NovidadesRoute: NovidadesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SobreRoute: SobreRoute,
+  TendenciasRoute: TendenciasRoute,
   TermosDeUsoRoute: TermosDeUsoRoute,
   TrocasEDevolucoesRoute: TrocasEDevolucoesRoute,
   ColecaoSlugRoute: ColecaoSlugRoute,
