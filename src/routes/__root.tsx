@@ -13,7 +13,6 @@ import { useCartSync } from "@/hooks/useCartSync";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import faviconAsset from "@/assets/favicon-divina.png.asset.json";
 
 function NotFoundComponent() {
   return (
@@ -68,15 +67,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Moda feminina premium com foco em alfaiataria contemporânea e modelagens que valorizam diferentes corpos. 18 anos em Joinville/SC." },
       { name: "author", content: "Divina Mulher" },
       { property: "og:title", content: "Divina Mulher | Alfaiataria feminina premium" },
-      { property: "og:description", content: "Alfaiataria contemporânea para mulheres que valorizam elegância em cada detalhe." },
+      { property: "og:description", content: "Moda feminina premium com foco em alfaiataria contemporânea e modelagens que valorizam diferentes corpos. 18 anos em Joinville/SC." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Divina Mulher" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Divina Mulher | Alfaiataria feminina premium" },
+      { name: "twitter:description", content: "Moda feminina premium com foco em alfaiataria contemporânea e modelagens que valorizam diferentes corpos. 18 anos em Joinville/SC." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7be3f6d8-8559-43f3-8a97-a562cfa435cc/id-preview-683be7b8--ffa147f5-63d5-4520-ba0e-ef10777bdd7e.lovable.app-1782401833181.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7be3f6d8-8559-43f3-8a97-a562cfa435cc/id-preview-683be7b8--ffa147f5-63d5-4520-ba0e-ef10777bdd7e.lovable.app-1782401833181.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: faviconAsset.url },
-      { rel: "apple-touch-icon", href: faviconAsset.url },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-192x192.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "https://divinamulher.com.br/wp-content/uploads/2025/02/cropped-Mask-group-10-180x180.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" },
