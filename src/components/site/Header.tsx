@@ -215,47 +215,46 @@ export function Header() {
         </div>
       )}
 
-      {/* Mobile menu drawer */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu principal">
-          <div className="absolute inset-0 bg-foreground/40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[85%] max-w-sm bg-background flex flex-col">
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <img src={LOGO} alt="Divina Mulher" className="h-8" />
-              <button aria-label="Fechar menu" onClick={() => setMenuOpen(false)} className={ICON_BTN}>
-                <X className="size-6" strokeWidth={1.5} />
-              </button>
-            </div>
-            <nav className="flex-1 overflow-y-auto p-5 space-y-1" aria-label="Mobile">
-              {NAV.map((item) => (
-                <div key={item.label} className="py-2">
-                  <Link
-                    to={item.to}
-                    onClick={() => setMenuOpen(false)}
-                    className="block text-base font-medium text-foreground py-2"
-                  >
-                    {item.label}
-                  </Link>
-                  {item.children && (
-                    <div className="pl-3 mt-1 space-y-1 border-l border-border">
-                      {item.children.map((c) => (
-                        <Link
-                          key={c.label}
-                          to={c.to}
-                          onClick={() => setMenuOpen(false)}
-                          className="block text-sm text-muted-foreground py-1.5"
-                        >
-                          {c.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
+      {/* Mobile menu drawer — Sheet uses a portal so it escapes the header's backdrop-filter containing block */}
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <SheetContent
+          side="left"
+          className="w-[85%] max-w-sm p-0 flex flex-col bg-background lg:hidden"
+        >
+          <SheetHeader className="p-5 border-b border-border flex-row items-center justify-between space-y-0">
+            <img src={LOGO} alt="Divina Mulher" className="h-8" />
+            <SheetTitle className="sr-only">Menu principal</SheetTitle>
+            <SheetDescription className="sr-only">Navegação por categorias</SheetDescription>
+          </SheetHeader>
+          <nav className="flex-1 overflow-y-auto p-5" aria-label="Mobile">
+            {NAV.map((item) => (
+              <div key={item.label} className="py-1.5 border-b border-border/40 last:border-0">
+                <Link
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-base font-display tracking-wide text-foreground py-2.5"
+                >
+                  {item.label}
+                </Link>
+                {item.children && (
+                  <div className="pl-3 pb-2 space-y-0.5 border-l border-border">
+                    {item.children.map((c) => (
+                      <Link
+                        key={c.label}
+                        to={c.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="block text-sm text-muted-foreground py-1.5 hover:text-primary"
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </SheetContent>
+      </Sheet>
 
       {/* Cart side drawer (controlled here so right-icon button opens it) */}
       <CartSideDrawer open={cartOpen} onOpenChange={setCartOpen} />
