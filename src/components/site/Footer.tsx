@@ -25,15 +25,15 @@ export function Footer() {
 
         <FooterCol title="Institucional" links={[
           { label: "Sobre a Marca", to: "/sobre" },
-          { label: "Nossa História", to: "/sobre" },
-          { label: "Lojas Físicas", to: "/sobre" },
-          { label: "Trabalhe Conosco", to: "/sobre" },
+          { label: "Contato", to: "/contato" },
+          { label: "Termos de Uso", to: "/termos-de-uso" },
+          { label: "Política de Privacidade", to: "/politica-de-privacidade" },
         ]} />
         <FooterCol title="Atendimento" links={[
-          { label: "Central de Ajuda", to: "/sobre" },
-          { label: "Trocas & Devoluções", to: "/sobre" },
+          { label: "Central de Ajuda", to: "/faq" },
+          { label: "Trocas & Devoluções", to: "/trocas-e-devolucoes" },
+          { label: "Entrega & Frete", to: "/entrega-e-frete" },
           { label: "Guia de Medidas", to: "/guia-de-medidas" },
-          { label: "Política de Privacidade", to: "/sobre" },
         ]} />
         <FooterCol title="Coleções" links={[
           { label: "Vestidos", to: "/colecao/vestidos" },
