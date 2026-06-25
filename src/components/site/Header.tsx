@@ -70,7 +70,8 @@ export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const handleSoon = () => toast.success("Funcionalidade em breve");
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
   // sticky shadow on scroll
   useEffect(() => {
