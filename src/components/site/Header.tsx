@@ -129,12 +129,12 @@ export function Header() {
           >
             <Search className="size-5" strokeWidth={1.5} />
           </button>
-          <button aria-label="Lista de desejos" onClick={handleSoon} className={ICON_BTN}>
+          <Link to="/favoritos" aria-label="Lista de desejos" className={ICON_BTN}>
             <Heart className="size-5" strokeWidth={1.5} />
-          </button>
-          <button aria-label="Minha conta" onClick={handleSoon} className={ICON_BTN}>
+          </Link>
+          <Link to="/conta" aria-label="Minha conta" className={ICON_BTN}>
             <User className="size-5" strokeWidth={1.5} />
-          </button>
+          </Link>
           <button
             aria-label={`Sacola${totalItems ? `, ${totalItems} ${totalItems === 1 ? "item" : "itens"}` : ""}`}
             onClick={() => setCartOpen(true)}
