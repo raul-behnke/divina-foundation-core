@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { useCartSync } from "@/hooks/useCartSync";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -113,9 +114,6 @@ function RootComponent() {
 }
 
 function CartSyncBridge() {
-  // dynamic import not needed; hook is safe on client
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { useCartSync } = require("@/hooks/useCartSync");
   useCartSync();
   return null;
 }
