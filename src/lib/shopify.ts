@@ -302,3 +302,48 @@ export async function removeLineFromShopifyCart(
 export async function fetchCart(cartId: string) {
   return storefrontApiRequest(CART_QUERY, { id: cartId });
 }
+
+/* ============ STOCK / REAL-TIME AVAILABILITY ============ */
+
+const VARIANTS_STOCK_QUERY = `
+  query VariantsStock($ids: [ID!]!) {
+    nodes(ids: $ids) {
+      ... on ProductVariant {
+        id
+        availableForSale
+        quantityAvailable
+        currentlyNotInStock
+      }
+    }
+  }
+`;
+
+export interface VariantStock {
+  id: string;
+  availableForSale: boolean;
+  /** null when the merchant doesn't expose inventory quantities via Storefront API */
+  quantityAvailable: number | null;
+  currentlyNotInStock: boolean;
+}
+
+export async function fetchVariantsStock(ids: string[]): Promise<Record<string, VariantStock>> {
+  if (ids.length === 0) return {};
+  const data = await storefrontApiRequest<{ nodes: Array<VariantStock | null> }>(
+    VARIANTS_STOCK_QUERY,
+    { ids }
+  );
+  const map: Record<string, VariantStock> = {};
+  for (const node of data?.data?.nodes ?? []) {
+    if (node && node.id) {
+      map[node.id] = {
+        id: node.id,
+        availableForSale: !!node.availableForSale,
+        quantityAvailable:
+          typeof node.quantityAvailable === "number" ? node.quantityAvailable : null,
+        currentlyNotInStock: !!node.currentlyNotInStock,
+      };
+    }
+  }
+  return map;
+}
+
