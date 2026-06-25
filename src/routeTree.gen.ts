@@ -11,8 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as GuiaDeMedidasRouteImport } from './routes/guia-de-medidas'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as ContaRouteImport } from './routes/conta'
+import { Route as CarrinhoRouteImport } from './routes/carrinho'
+import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ContaIndexRouteImport } from './routes/conta.index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
+import { Route as ContaRecuperarSenhaRouteImport } from './routes/conta.recuperar-senha'
+import { Route as ContaPedidosRouteImport } from './routes/conta.pedidos'
+import { Route as ContaLoginRouteImport } from './routes/conta.login'
+import { Route as ContaEnderecosRouteImport } from './routes/conta.enderecos'
+import { Route as ContaDadosRouteImport } from './routes/conta.dados'
+import { Route as ContaCadastroRouteImport } from './routes/conta.cadastro'
 import { Route as ColecaoSlugRouteImport } from './routes/colecao.$slug'
 
 const SobreRoute = SobreRouteImport.update({
@@ -25,15 +36,70 @@ const GuiaDeMedidasRoute = GuiaDeMedidasRouteImport.update({
   path: '/guia-de-medidas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContaRoute = ContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarrinhoRoute = CarrinhoRouteImport.update({
+  id: '/carrinho',
+  path: '/carrinho',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuscaRoute = BuscaRouteImport.update({
+  id: '/busca',
+  path: '/busca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContaIndexRoute = ContaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ContaRoute,
+} as any)
 const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ContaRecuperarSenhaRoute = ContaRecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => ContaRoute,
+} as any)
+const ContaPedidosRoute = ContaPedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
+  getParentRoute: () => ContaRoute,
+} as any)
+const ContaLoginRoute = ContaLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => ContaRoute,
+} as any)
+const ContaEnderecosRoute = ContaEnderecosRouteImport.update({
+  id: '/enderecos',
+  path: '/enderecos',
+  getParentRoute: () => ContaRoute,
+} as any)
+const ContaDadosRoute = ContaDadosRouteImport.update({
+  id: '/dados',
+  path: '/dados',
+  getParentRoute: () => ContaRoute,
+} as any)
+const ContaCadastroRoute = ContaCadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => ContaRoute,
 } as any)
 const ColecaoSlugRoute = ColecaoSlugRouteImport.update({
   id: '/colecao/$slug',
@@ -43,47 +109,120 @@ const ColecaoSlugRoute = ColecaoSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/carrinho': typeof CarrinhoRoute
+  '/conta': typeof ContaRouteWithChildren
+  '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
+  '/conta/cadastro': typeof ContaCadastroRoute
+  '/conta/dados': typeof ContaDadosRoute
+  '/conta/enderecos': typeof ContaEnderecosRoute
+  '/conta/login': typeof ContaLoginRoute
+  '/conta/pedidos': typeof ContaPedidosRoute
+  '/conta/recuperar-senha': typeof ContaRecuperarSenhaRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/conta/': typeof ContaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/carrinho': typeof CarrinhoRoute
+  '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
+  '/conta/cadastro': typeof ContaCadastroRoute
+  '/conta/dados': typeof ContaDadosRoute
+  '/conta/enderecos': typeof ContaEnderecosRoute
+  '/conta/login': typeof ContaLoginRoute
+  '/conta/pedidos': typeof ContaPedidosRoute
+  '/conta/recuperar-senha': typeof ContaRecuperarSenhaRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/conta': typeof ContaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/busca': typeof BuscaRoute
+  '/carrinho': typeof CarrinhoRoute
+  '/conta': typeof ContaRouteWithChildren
+  '/favoritos': typeof FavoritosRoute
   '/guia-de-medidas': typeof GuiaDeMedidasRoute
   '/sobre': typeof SobreRoute
   '/colecao/$slug': typeof ColecaoSlugRoute
+  '/conta/cadastro': typeof ContaCadastroRoute
+  '/conta/dados': typeof ContaDadosRoute
+  '/conta/enderecos': typeof ContaEnderecosRoute
+  '/conta/login': typeof ContaLoginRoute
+  '/conta/pedidos': typeof ContaPedidosRoute
+  '/conta/recuperar-senha': typeof ContaRecuperarSenhaRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/conta/': typeof ContaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/busca'
+    | '/carrinho'
+    | '/conta'
+    | '/favoritos'
     | '/guia-de-medidas'
     | '/sobre'
     | '/colecao/$slug'
+    | '/conta/cadastro'
+    | '/conta/dados'
+    | '/conta/enderecos'
+    | '/conta/login'
+    | '/conta/pedidos'
+    | '/conta/recuperar-senha'
     | '/produto/$slug'
+    | '/conta/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/guia-de-medidas' | '/sobre' | '/colecao/$slug' | '/produto/$slug'
+  to:
+    | '/'
+    | '/busca'
+    | '/carrinho'
+    | '/favoritos'
+    | '/guia-de-medidas'
+    | '/sobre'
+    | '/colecao/$slug'
+    | '/conta/cadastro'
+    | '/conta/dados'
+    | '/conta/enderecos'
+    | '/conta/login'
+    | '/conta/pedidos'
+    | '/conta/recuperar-senha'
+    | '/produto/$slug'
+    | '/conta'
   id:
     | '__root__'
     | '/'
+    | '/busca'
+    | '/carrinho'
+    | '/conta'
+    | '/favoritos'
     | '/guia-de-medidas'
     | '/sobre'
     | '/colecao/$slug'
+    | '/conta/cadastro'
+    | '/conta/dados'
+    | '/conta/enderecos'
+    | '/conta/login'
+    | '/conta/pedidos'
+    | '/conta/recuperar-senha'
     | '/produto/$slug'
+    | '/conta/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BuscaRoute: typeof BuscaRoute
+  CarrinhoRoute: typeof CarrinhoRoute
+  ContaRoute: typeof ContaRouteWithChildren
+  FavoritosRoute: typeof FavoritosRoute
   GuiaDeMedidasRoute: typeof GuiaDeMedidasRoute
   SobreRoute: typeof SobreRoute
   ColecaoSlugRoute: typeof ColecaoSlugRoute
@@ -106,6 +245,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuiaDeMedidasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conta': {
+      id: '/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof ContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carrinho': {
+      id: '/carrinho'
+      path: '/carrinho'
+      fullPath: '/carrinho'
+      preLoaderRoute: typeof CarrinhoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/busca': {
+      id: '/busca'
+      path: '/busca'
+      fullPath: '/busca'
+      preLoaderRoute: typeof BuscaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -113,12 +280,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conta/': {
+      id: '/conta/'
+      path: '/'
+      fullPath: '/conta/'
+      preLoaderRoute: typeof ContaIndexRouteImport
+      parentRoute: typeof ContaRoute
+    }
     '/produto/$slug': {
       id: '/produto/$slug'
       path: '/produto/$slug'
       fullPath: '/produto/$slug'
       preLoaderRoute: typeof ProdutoSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/conta/recuperar-senha': {
+      id: '/conta/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/conta/recuperar-senha'
+      preLoaderRoute: typeof ContaRecuperarSenhaRouteImport
+      parentRoute: typeof ContaRoute
+    }
+    '/conta/pedidos': {
+      id: '/conta/pedidos'
+      path: '/pedidos'
+      fullPath: '/conta/pedidos'
+      preLoaderRoute: typeof ContaPedidosRouteImport
+      parentRoute: typeof ContaRoute
+    }
+    '/conta/login': {
+      id: '/conta/login'
+      path: '/login'
+      fullPath: '/conta/login'
+      preLoaderRoute: typeof ContaLoginRouteImport
+      parentRoute: typeof ContaRoute
+    }
+    '/conta/enderecos': {
+      id: '/conta/enderecos'
+      path: '/enderecos'
+      fullPath: '/conta/enderecos'
+      preLoaderRoute: typeof ContaEnderecosRouteImport
+      parentRoute: typeof ContaRoute
+    }
+    '/conta/dados': {
+      id: '/conta/dados'
+      path: '/dados'
+      fullPath: '/conta/dados'
+      preLoaderRoute: typeof ContaDadosRouteImport
+      parentRoute: typeof ContaRoute
+    }
+    '/conta/cadastro': {
+      id: '/conta/cadastro'
+      path: '/cadastro'
+      fullPath: '/conta/cadastro'
+      preLoaderRoute: typeof ContaCadastroRouteImport
+      parentRoute: typeof ContaRoute
     }
     '/colecao/$slug': {
       id: '/colecao/$slug'
@@ -130,8 +346,34 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ContaRouteChildren {
+  ContaCadastroRoute: typeof ContaCadastroRoute
+  ContaDadosRoute: typeof ContaDadosRoute
+  ContaEnderecosRoute: typeof ContaEnderecosRoute
+  ContaLoginRoute: typeof ContaLoginRoute
+  ContaPedidosRoute: typeof ContaPedidosRoute
+  ContaRecuperarSenhaRoute: typeof ContaRecuperarSenhaRoute
+  ContaIndexRoute: typeof ContaIndexRoute
+}
+
+const ContaRouteChildren: ContaRouteChildren = {
+  ContaCadastroRoute: ContaCadastroRoute,
+  ContaDadosRoute: ContaDadosRoute,
+  ContaEnderecosRoute: ContaEnderecosRoute,
+  ContaLoginRoute: ContaLoginRoute,
+  ContaPedidosRoute: ContaPedidosRoute,
+  ContaRecuperarSenhaRoute: ContaRecuperarSenhaRoute,
+  ContaIndexRoute: ContaIndexRoute,
+}
+
+const ContaRouteWithChildren = ContaRoute._addFileChildren(ContaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BuscaRoute: BuscaRoute,
+  CarrinhoRoute: CarrinhoRoute,
+  ContaRoute: ContaRouteWithChildren,
+  FavoritosRoute: FavoritosRoute,
   GuiaDeMedidasRoute: GuiaDeMedidasRoute,
   SobreRoute: SobreRoute,
   ColecaoSlugRoute: ColecaoSlugRoute,
