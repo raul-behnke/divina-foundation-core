@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook } from "lucide-react";
 
-const LOGO = "https://divinamulher.com.br/wp-content/uploads/2025/07/logoDivinaMulher.webp";
+import logoAsset from "@/assets/logo-divina.png.asset.json";
+const LOGO = logoAsset.url;
 
 export function Footer() {
   return (

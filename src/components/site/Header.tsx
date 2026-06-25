@@ -14,7 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
 
-const LOGO = "https://divinamulher.com.br/wp-content/uploads/2025/07/logoDivinaMulher.webp";
+import logoAsset from "@/assets/logo-divina.png.asset.json";
+const LOGO = logoAsset.url;
 
 const NAV = [
   { label: "Novidades", to: "/colecao/novidades" },
