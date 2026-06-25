@@ -2,16 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { HeroBanner } from "@/components/site/HeroBanner";
-import { BenefitBar } from "@/components/site/BenefitBar";
 import { SectionTitle } from "@/components/site/SectionTitle";
 import { CategoryCard } from "@/components/site/CategoryCard";
-import { ProductCard } from "@/components/site/ProductCard";
 import { ProductCarousel } from "@/components/site/ProductCarousel";
 import { TestimonialCard } from "@/components/site/TestimonialCard";
 import { NewsletterSection } from "@/components/site/NewsletterSection";
 import { Button } from "@/components/ui/button";
-import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
-import { isProductNew, isProductPlus } from "@/data/products";
+import { fetchProducts } from "@/lib/shopify";
+import { isProductNew } from "@/data/products";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
