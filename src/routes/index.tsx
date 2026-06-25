@@ -133,30 +133,3 @@ function HomePage() {
     </SiteLayout>
   );
 }
-
-function ProductGrid({ products, loading, columns = 4 }: { products: ShopifyProduct[]; loading: boolean; columns?: 3 | 4 }) {
-  const cls = columns === 4
-    ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6"
-    : "grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10 md:gap-x-6";
-
-  if (loading) {
-    return (
-      <div className="py-16 flex justify-center">
-        <Loader2 className="size-6 animate-spin text-primary" />
-      </div>
-    );
-  }
-  if (products.length === 0) {
-    return (
-      <div className="py-12 text-center border border-dashed border-border">
-        <p className="font-display text-lg text-foreground">Nenhum produto cadastrado ainda</p>
-        <p className="text-sm text-muted-foreground mt-2">Adicione produtos pela Shopify para vê-los aqui.</p>
-      </div>
-    );
-  }
-  return (
-    <div className={cls}>
-      {products.map((p) => <ProductCard key={p.node.id} product={p} />)}
-    </div>
-  );
-}
