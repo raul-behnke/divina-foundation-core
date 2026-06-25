@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Heart, Truck, RefreshCw, ShieldCheck, Minus, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { fetchProductByHandle, fetchProducts, formatPrice, type ShopifyProduct } from "@/lib/shopify";
+import { fetchProductByHandle, fetchProducts, fetchVariantsStock, formatPrice, type ShopifyProduct } from "@/lib/shopify";
 import {
   colorHex,
   getProductColors,
