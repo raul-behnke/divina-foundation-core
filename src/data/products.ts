@@ -7,6 +7,16 @@ export const COLLECTION_QUERIES: Record<string, { title: string; description: st
     description: "Recém-chegados ao atelier — as últimas peças que entraram na coleção.",
     query: undefined, // all products, sorted by newness on the client
   },
+  tendencias: {
+    title: "Tendências",
+    description: "As silhuetas, cores e tecidos que estão definindo a estação.",
+    query: "tag:tendencia OR tag:trending",
+  },
+  "mais-vendidos": {
+    title: "Mais vendidos",
+    description: "As peças mais amadas pelas nossas clientes — campeãs de recompra.",
+    query: "tag:bestseller OR tag:mais-vendidos",
+  },
   vestidos: {
     title: "Vestidos",
     description: "Vestidos midi, longos, curtos e chemise. Modelagens contemporâneas para todos os momentos.",
