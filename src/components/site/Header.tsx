@@ -172,7 +172,7 @@ export function Header() {
                 {item.label}
               </Link>
               {item.children && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full opacity-0 invisible group-hover:opacity-100 group-hover:visible focus-within:opacity-100 focus-within:visible transition-all">
+                <div className="absolute left-1/2 -translate-x-1/2 top-full z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible focus-within:opacity-100 focus-within:visible transition-all">
                   <div className="bg-background border border-border shadow-soft min-w-[220px] py-3">
                     {item.children.map((c) => (
                       <Link
