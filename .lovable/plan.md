@@ -1,58 +1,62 @@
-# Levantamento de Páginas — Divina Mulher
+## Objetivo
+Permitir que a dona da loja edite os 3 (ou mais) slides do hero da home direto pelo admin do Shopify, sem tocar em código, usando **Files + Metaobjects** nativos.
 
-## Páginas já existentes
-- `/` — Home
-- `/colecao/$slug` — Listagem de coleção (com filtros)
-- `/produto/$slug` — PDP (página de produto)
-- `/sobre` — Sobre a marca
-- `/guia-de-medidas` — Guia de medidas
+## Setup único no admin Shopify (feito por mim, guiado passo a passo)
+Em **Settings → Custom data → Metaobjects → Add definition**:
 
-## Páginas pendentes (agrupadas por prioridade)
+- **Name**: `Home Banner` · **Type**: `home_banner`
+- **Storefront access**: ✅ Storefronts can access
+- **Fields**:
+  - `image` — File (aceita apenas imagens)
+  - `headline` — Single line text
+  - `subheadline` — Multi-line text (opcional)
+  - `cta_label` — Single line text (opcional)
+  - `cta_url` — URL (opcional)
+  - `order` — Integer (para ordenar os slides)
+  - `active` — Boolean (liga/desliga sem deletar)
 
-### 1. Essenciais de e-commerce (bloqueiam conversão)
-- `/carrinho` — Página de carrinho dedicada (hoje só existe o drawer lateral)
-- `/busca` — Resultados de busca (a lupa do header ainda não tem destino)
-- `/favoritos` (ou `/lista-de-desejos`) — Wishlist (ícone de coração no header)
-- `/conta` — Hub do cliente (ícone de perfil no header)
-  - `/conta/login` e `/conta/cadastro`
-  - `/conta/pedidos` — Histórico/status de pedidos
-  - `/conta/enderecos`
-  - `/conta/dados` — Dados pessoais / trocar senha
-  - `/conta/recuperar-senha`
+Depois eu crio as 3 entradas iniciais reproduzindo os banners atuais para não haver regressão visual.
 
-### 2. Navegação / catálogo
-- `/colecoes` — Índice de todas as coleções/categorias (hoje só se chega via menu)
-- `/novidades`, `/tendencias`, `/mais-vendidos` — Hoje são apenas seções na home; viram landing pages próprias
-- `/lookbook` ou `/editorial` — Conteúdo editorial (opcional, reforça posicionamento premium)
+## Fluxo da dona da loja depois de pronto
+1. **Content → Files** → sobe a imagem nova.
+2. **Content → Metaobjects → Home Banner → Add entry** → preenche campos, escolhe imagem, marca `active`.
+3. Salvou → o site reflete em segundos (com revalidação por foco de janela via React Query).
+4. Para desativar um slide: desmarca `active`. Para reordenar: muda `order`.
 
-### 3. Institucionais (hoje todos os links do Footer apontam para `/sobre`)
-- `/nossa-historia` (separar de `/sobre`, com a timeline)
-- `/lojas` — Lojas físicas de Joinville (mapa + endereço + horários)
-- `/trabalhe-conosco` — Vagas / formulário
-- `/contato` — Formulário + WhatsApp + e-mail
-- `/central-de-ajuda` ou `/faq` — Perguntas frequentes
-- `/trocas-e-devolucoes` — Política de trocas
-- `/entrega-e-frete` — Prazos, fretes, rastreio
-- `/formas-de-pagamento`
-- `/politica-de-privacidade`
-- `/termos-de-uso`
-- `/clube-vip` — Página dedicada ao programa (hoje só CTA de newsletter)
+## Mudanças de código
 
-### 4. Sistema / utilidades
-- `/404` — Página de não encontrado (notFoundComponent do root + rota dedicada)
-- `/checkout/sucesso` — Página de retorno pós-checkout Shopify (thank-you page com order lookup)
-- `sitemap.xml` e `robots.txt` — SEO técnico
+### `src/lib/shopify.ts`
+Adicionar `fetchHomeBanners()` com query GraphQL Storefront API:
+```graphql
+query HomeBanners {
+  metaobjects(type: "home_banner", first: 20) {
+    edges { node {
+      id
+      fields { key value reference { ... on MediaImage { image { url altText width height } } } }
+    }}
+  }
+}
+```
+Normaliza para `{ image, alt, headline, subheadline, ctaLabel, ctaUrl, order, active }[]`, filtra `active`, ordena por `order`.
 
-## Sugestão de ordem de execução
-1. **Sprint 1 (conversão):** `/carrinho`, `/busca`, `/favoritos`, `/conta` + sub-rotas de auth.
-2. **Sprint 2 (institucionais legais):** `/trocas-e-devolucoes`, `/entrega-e-frete`, `/politica-de-privacidade`, `/termos-de-uso`, `/contato`, `/faq` — destrava os links do footer e reduz dúvidas pré-compra.
-3. **Sprint 3 (marca + catálogo):** `/lojas`, `/nossa-historia`, `/clube-vip`, `/novidades`, `/tendencias`, `/mais-vendidos`, `/colecoes`.
-4. **Sprint 4 (polimento):** `/lookbook`, `/trabalhe-conosco`, `/404`, `/checkout/sucesso`, sitemap/robots.
+### `src/components/site/HeroBanner.tsx`
+- Trocar o array `SLIDES` hardcoded por `useQuery({ queryKey: ["home-banners"], queryFn: fetchHomeBanners, staleTime: 60_000 })`.
+- **Fallback**: se `data` vier vazio ou a query falhar, usa os 3 slides atuais como default (constante `FALLBACK_SLIDES`) — home nunca fica em branco.
+- Renderiza `headline`/`subheadline`/CTA por cima da imagem quando existirem (com overlay atual `bg-black/20` mantido).
+- Mantém autoplay 5s, setas, dots, pausa no hover/focus, navegação por teclado, alturas 60vh/80vh — sem mexer em acessibilidade.
+- Loading: mostra o primeiro slide de fallback para evitar CLS; sem spinner (é hero above-the-fold).
 
-## Observações técnicas
-- Auth do cliente (`/conta/*`) depende de habilitar Customer Accounts do Shopify ou Lovable Cloud + Storefront API customer mutations — decidir antes da Sprint 1.
-- Wishlist pode começar local (Zustand + localStorage) e migrar para conta logada depois.
-- `/busca` usa `searchProducts` do Storefront API; já temos cliente Shopify configurado.
-- Cada rota nova deve ter `head()` próprio (title/description/og) — padrão TanStack Start.
+### `src/routes/index.tsx`
+Nenhuma mudança de layout. Opcional: `prefetchQuery(["home-banners"], fetchHomeBanners)` no `loader` para o hero chegar já pronto no SSR.
 
-Quer que eu já comece pela Sprint 1, ou prefere reordenar / cortar algo da lista?
+## Guia rápido para a dona
+Adicionar um arquivo `MANUAL-BANNERS.md` na raiz (curto, com 5 prints/passos e a URL direta `admin.shopify.com/store/.../content/entries/home_banner`). Se preferir, viro isso em uma página `/admin/ajuda-banners` protegida — mas por ora um markdown resolve.
+
+## Fora do escopo desta entrega
+- Editor visual dentro do Lovable (painel próprio) — descartado.
+- Banners de outras seções (Lançamentos, Coleções, Clube VIP) — dá pra replicar a mesma mecânica depois criando novos metaobjects (`section_highlight`, etc.) reutilizando o mesmo helper.
+- Agendamento por data (publicar/despublicar automaticamente) — Shopify não oferece nativo; ficaria numa v2.
+
+## Riscos e mitigação
+- **Storefront token sem permissão de metaobjects**: se a query retornar vazio/erro, o fallback mantém o site funcionando; eu ajusto o token/escopo no momento da implementação.
+- **Imagem muito pesada subida pela cliente**: uso o transform `url(transform: { maxWidth: 2000, preferredContentType: WEBP })` da CDN da Shopify direto na query, garantindo performance.
