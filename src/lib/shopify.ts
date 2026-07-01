@@ -2,9 +2,9 @@
 import { toast } from "sonner";
 
 export const SHOPIFY_API_VERSION = "2025-07";
-export const SHOPIFY_STORE_PERMANENT_DOMAIN = "divina-mulher-foundation-1fnow.myshopify.com";
+export const SHOPIFY_STORE_PERMANENT_DOMAIN = "upu233-ke.myshopify.com";
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-export const SHOPIFY_STOREFRONT_TOKEN = "c15f2d69a8c58851cbce8c7b54a64e1f";
+export const SHOPIFY_STOREFRONT_TOKEN = "2ebb18cff678b1d43d9fc25b38758e2d";
 
 export interface ShopifyMoney {
   amount: string;
