@@ -378,4 +378,84 @@ export async function fetchVariantsStock(ids: string[]): Promise<Record<string, 
   return map;
 }
 
+/* ============ HOME BANNERS (Metaobjects) ============ */
+
+const HOME_BANNERS_QUERY = `
+  query HomeBanners {
+    metaobjects(type: "home_banner", first: 20) {
+      edges {
+        node {
+          id
+          handle
+          fields {
+            key
+            value
+            reference {
+              ... on MediaImage {
+                image { url altText width height }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface HomeBanner {
+  id: string;
+  image: string;
+  alt: string;
+  headline: string | null;
+  subheadline: string | null;
+  ctaLabel: string | null;
+  ctaUrl: string | null;
+  order: number;
+  active: boolean;
+}
+
+function parseBoolField(v: string | null | undefined): boolean {
+  if (!v) return false;
+  return v === "true" || v === "1";
+}
+
+export async function fetchHomeBanners(): Promise<HomeBanner[]> {
+  try {
+    const data = await storefrontApiRequest<{ metaobjects: { edges: Array<{ node: any }> } }>(
+      HOME_BANNERS_QUERY
+    );
+    const edges = data?.data?.metaobjects?.edges ?? [];
+    const banners: HomeBanner[] = edges
+      .map(({ node }) => {
+        const fields: Record<string, { value: string | null; reference: any }> = {};
+        for (const f of node.fields ?? []) {
+          fields[f.key] = { value: f.value, reference: f.reference };
+        }
+        const imgRef = fields.image?.reference?.image;
+        const imgUrl: string | undefined = imgRef?.url;
+        if (!imgUrl) return null;
+        const orderRaw = fields.order?.value;
+        const activeRaw = fields.active?.value;
+        return {
+          id: node.id as string,
+          image: imgUrl,
+          alt: imgRef?.altText || fields.headline?.value || "Banner Divina Mulher",
+          headline: fields.headline?.value || null,
+          subheadline: fields.subheadline?.value || null,
+          ctaLabel: fields.cta_label?.value || null,
+          ctaUrl: fields.cta_url?.value || null,
+          order: orderRaw ? parseInt(orderRaw, 10) || 0 : 0,
+          active: activeRaw === null || activeRaw === undefined ? true : parseBoolField(activeRaw),
+        } as HomeBanner;
+      })
+      .filter((b): b is HomeBanner => b !== null && b.active)
+      .sort((a, b) => a.order - b.order);
+    return banners;
+  } catch (e) {
+    console.warn("fetchHomeBanners failed, using fallback", e);
+    return [];
+  }
+}
+
+
 
