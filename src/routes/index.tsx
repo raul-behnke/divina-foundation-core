@@ -68,10 +68,11 @@ function HomePage() {
       <section className="container-dm py-16 md:py-24">
         <SectionTitle eyebrow="Coleções" title="Encontre seu próximo favorito" description="Selecionadas para mulheres que valorizam alfaiataria, conforto e atitude." />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <CategoryCard title="Vestidos" to="/colecao/vestidos" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/VESTIDOS.png" alt="Vestidos Divina Mulher" />
-          <CategoryCard title="Alfaiataria" to="/colecao/alfaiataria" cutout image="https://divinamulher.com.br/wp-content/uploads/2025/07/BLAZERS.png" alt="Alfaiataria Divina Mulher" />
-          <CategoryCard title="Blusas" to="/colecao/blusas" image="https://divinamulher.com.br/wp-content/uploads/2025/12/15336181427-estudio-divina-mulher-21-03-2025-0348.jpeg" alt="Blusas e camisas femininas" />
-          <CategoryCard title="Plus Size" to="/colecao/plus" image="https://divinamulher.com.br/wp-content/uploads/2025/03/15330629596-fotografia-de-estudio-divina-mulher-0981.jpeg" alt="Coleção Plus Size" />
+          <CategoryCard title="Vestidos" to="/colecao/vestidos" image="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=80" alt="Vestidos Divina Mulher" />
+          <CategoryCard title="Alfaiataria" to="/colecao/alfaiataria" image="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=1200&q=80" alt="Alfaiataria Divina Mulher" />
+          <CategoryCard title="Blusas" to="/colecao/blusas" image="https://images.unsplash.com/photo-1564257577-2d3ee8740fd8?auto=format&fit=crop&w=1200&q=80" alt="Blusas e camisas femininas" />
+          <CategoryCard title="Plus Size" to="/colecao/plus" image="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?auto=format&fit=crop&w=1200&q=80" alt="Coleção Plus Size" />
+
         </div>
       </section>
 
@@ -115,7 +116,7 @@ function HomePage() {
             </Button>
           </div>
           <div className="aspect-[4/5] overflow-hidden">
-            <img src="https://divinamulher.com.br/wp-content/uploads/2025/12/15393459661-estudio-divina-mulher-31-10-2025-0695.jpg" alt="Editorial Divina Mulher — atelier" className="w-full h-full object-cover" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80" alt="Editorial Divina Mulher — atelier" className="w-full h-full object-cover" loading="lazy" />
           </div>
         </div>
       </section>
