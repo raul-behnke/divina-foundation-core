@@ -181,6 +181,7 @@ export function Header() {
                       <Link
                         key={c.label}
                         to={c.to}
+                        search={c.sub ? { sub: c.sub } : undefined}
                         className="block px-5 py-2 text-sm text-foreground hover:bg-background-soft hover:text-primary transition-colors"
                       >
                         {c.label}
