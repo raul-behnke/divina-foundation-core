@@ -70,7 +70,7 @@ function HomePage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <CategoryCard title="Vestidos" to="/colecao/vestidos" image="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1200&q=80" alt="Vestidos Divina Mulher" />
           <CategoryCard title="Alfaiataria" to="/colecao/alfaiataria" image="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=1200&q=80" alt="Alfaiataria Divina Mulher" />
-          <CategoryCard title="Blusas" to="/colecao/blusas" image="https://images.unsplash.com/photo-1564257577-2d3ee8740fd8?auto=format&fit=crop&w=1200&q=80" alt="Blusas e camisas femininas" />
+          <CategoryCard title="Blusas" to="/colecao/blusas" image="https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=1200&q=80" alt="Blusas e camisas femininas" />
           <CategoryCard title="Plus Size" to="/colecao/plus" image="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?auto=format&fit=crop&w=1200&q=80" alt="Coleção Plus Size" />
 
         </div>
