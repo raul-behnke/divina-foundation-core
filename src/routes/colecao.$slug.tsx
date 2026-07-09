@@ -19,23 +19,31 @@ const searchSchema = z.object({
   sub: fallback(z.string(), "").default(""),
 });
 
-// Keywords used to match products to a subcategory (title / tags / product_type / handle)
-const SUB_KEYWORDS: Record<string, { label: string; keywords: string[] }> = {
-  midi: { label: "Midi", keywords: ["midi"] },
-  longo: { label: "Longo", keywords: ["longo", "long"] },
-  curto: { label: "Curto", keywords: ["curto", "mini"] },
-  chemise: { label: "Chemise", keywords: ["chemise"] },
-  blazer: { label: "Blazers", keywords: ["blazer"] },
-  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"] },
-  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"] },
-  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"] },
-  blusa: { label: "Blusas", keywords: ["blusa"] },
-  camisa: { label: "Camisas", keywords: ["camisa"] },
-  regata: { label: "Regatas", keywords: ["regata"] },
-  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"] },
-  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"] },
-  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"] },
-  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"] },
+// Keywords + Unsplash cover used to match/represent each subcategory
+const SUB_KEYWORDS: Record<string, { label: string; keywords: string[]; image: string }> = {
+  midi: { label: "Midi", keywords: ["midi"], image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80" },
+  longo: { label: "Longo", keywords: ["longo", "long"], image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80" },
+  curto: { label: "Curto", keywords: ["curto", "mini"], image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80" },
+  chemise: { label: "Chemise", keywords: ["chemise"], image: "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?auto=format&fit=crop&w=800&q=80" },
+  blazer: { label: "Blazers", keywords: ["blazer"], image: "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=800&q=80" },
+  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"], image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80" },
+  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"], image: "https://images.unsplash.com/photo-1571513722275-4b41940f54b8?auto=format&fit=crop&w=800&q=80" },
+  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"], image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80" },
+  blusa: { label: "Blusas", keywords: ["blusa"], image: "https://images.unsplash.com/photo-1564257577-2d3ee8740fd8?auto=format&fit=crop&w=800&q=80" },
+  camisa: { label: "Camisas", keywords: ["camisa"], image: "https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=800&q=80" },
+  regata: { label: "Regatas", keywords: ["regata"], image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=80" },
+  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"], image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=800&q=80" },
+  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"], image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80" },
+  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"], image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80" },
+  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"], image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" },
+};
+
+// Which subcategory chips to show on each parent collection page
+const COLLECTION_SUBS: Record<string, string[]> = {
+  vestidos: ["midi", "longo", "curto", "chemise"],
+  alfaiataria: ["blazer", "calca", "conjunto", "bermuda"],
+  blusas: ["blusa", "camisa", "regata"],
+  plus: ["vestido-plus", "blusa-plus", "calca-plus", "conjunto-plus"],
 };
 
 function matchesSub(p: ShopifyProduct, sub: string): boolean {
@@ -157,6 +165,46 @@ function ColecaoPage() {
         <h1 className="font-display text-3xl md:text-5xl leading-tight">{heading}</h1>
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
       </header>
+
+      {COLLECTION_SUBS[slug] && (
+        <div className="container-dm pb-10 md:pb-14">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {COLLECTION_SUBS[slug].map((subKey) => {
+              const s = SUB_KEYWORDS[subKey];
+              if (!s) return null;
+              const active = sub === subKey;
+              return (
+                <Link
+                  key={subKey}
+                  to="/colecao/$slug"
+                  params={{ slug }}
+                  search={active ? {} : { sub: subKey }}
+                  className={`group block overflow-hidden bg-background-soft border transition ${
+                    active ? "border-primary ring-2 ring-primary/30" : "border-transparent hover:border-border"
+                  }`}
+                  aria-pressed={active}
+                >
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      src={s.image}
+                      alt={s.label}
+                      loading="lazy"
+                      className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-3 md:p-4 text-center">
+                    <span className={`font-display text-sm md:text-base tracking-wide ${active ? "text-primary" : "text-foreground group-hover:text-primary"}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+
 
 
       <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
