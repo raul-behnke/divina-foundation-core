@@ -257,6 +257,7 @@ export function Header() {
                       <Link
                         key={c.label}
                         to={c.to}
+                        search={c.sub ? { sub: c.sub } : undefined}
                         onClick={() => setMenuOpen(false)}
                         className="block text-sm text-muted-foreground py-1.5 hover:text-primary"
                       >
