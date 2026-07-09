@@ -17,45 +17,48 @@ import { formatPrice } from "@/lib/shopify";
 import logoAsset from "@/assets/logo-divina.png.asset.json";
 const LOGO = logoAsset.url;
 
-const NAV = [
+type NavChild = { label: string; to: string; sub?: string };
+type NavItem = { label: string; to: string; children?: NavChild[] };
+
+const NAV: NavItem[] = [
   { label: "Novidades", to: "/colecao/novidades" },
   {
     label: "Vestidos",
     to: "/colecao/vestidos",
     children: [
-      { label: "Midi", to: "/colecao/vestidos" },
-      { label: "Longo", to: "/colecao/vestidos" },
-      { label: "Curto", to: "/colecao/vestidos" },
-      { label: "Chemise", to: "/colecao/vestidos" },
+      { label: "Midi", to: "/colecao/vestidos", sub: "midi" },
+      { label: "Longo", to: "/colecao/vestidos", sub: "longo" },
+      { label: "Curto", to: "/colecao/vestidos", sub: "curto" },
+      { label: "Chemise", to: "/colecao/vestidos", sub: "chemise" },
     ],
   },
   {
     label: "Alfaiataria",
     to: "/colecao/alfaiataria",
     children: [
-      { label: "Blazers", to: "/colecao/alfaiataria" },
-      { label: "Calças de alfaiataria", to: "/colecao/alfaiataria" },
-      { label: "Conjuntos", to: "/colecao/alfaiataria" },
-      { label: "Bermudas & Shorts", to: "/colecao/alfaiataria" },
+      { label: "Blazers", to: "/colecao/alfaiataria", sub: "blazer" },
+      { label: "Calças de alfaiataria", to: "/colecao/alfaiataria", sub: "calca" },
+      { label: "Conjuntos", to: "/colecao/alfaiataria", sub: "conjunto" },
+      { label: "Bermudas & Shorts", to: "/colecao/alfaiataria", sub: "bermuda" },
     ],
   },
   {
     label: "Blusas & Camisas",
     to: "/colecao/blusas",
     children: [
-      { label: "Blusas", to: "/colecao/blusas" },
-      { label: "Camisas", to: "/colecao/blusas" },
-      { label: "Regatas", to: "/colecao/blusas" },
+      { label: "Blusas", to: "/colecao/blusas", sub: "blusa" },
+      { label: "Camisas", to: "/colecao/blusas", sub: "camisa" },
+      { label: "Regatas", to: "/colecao/blusas", sub: "regata" },
     ],
   },
   {
     label: "Plus Size",
     to: "/colecao/plus",
     children: [
-      { label: "Vestidos Plus", to: "/colecao/plus" },
-      { label: "Blusas Plus", to: "/colecao/plus" },
-      { label: "Calças Plus", to: "/colecao/plus" },
-      { label: "Conjuntos Plus", to: "/colecao/plus" },
+      { label: "Vestidos Plus", to: "/colecao/plus", sub: "vestido-plus" },
+      { label: "Blusas Plus", to: "/colecao/plus", sub: "blusa-plus" },
+      { label: "Calças Plus", to: "/colecao/plus", sub: "calca-plus" },
+      { label: "Conjuntos Plus", to: "/colecao/plus", sub: "conjunto-plus" },
     ],
   },
   { label: "Sobre a Marca", to: "/sobre" },
@@ -178,6 +181,7 @@ export function Header() {
                       <Link
                         key={c.label}
                         to={c.to}
+                        search={c.sub ? { sub: c.sub } : undefined}
                         className="block px-5 py-2 text-sm text-foreground hover:bg-background-soft hover:text-primary transition-colors"
                       >
                         {c.label}
@@ -253,6 +257,7 @@ export function Header() {
                       <Link
                         key={c.label}
                         to={c.to}
+                        search={c.sub ? { sub: c.sub } : undefined}
                         onClick={() => setMenuOpen(false)}
                         className="block text-sm text-muted-foreground py-1.5 hover:text-primary"
                       >

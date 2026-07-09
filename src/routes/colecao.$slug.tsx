@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ProductCard } from "@/components/site/ProductCard";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
@@ -13,7 +15,45 @@ import {
 } from "@/data/products";
 import { ChevronDown, SlidersHorizontal, X, Loader2 } from "lucide-react";
 
+const searchSchema = z.object({
+  sub: fallback(z.string(), "").default(""),
+});
+
+// Keywords used to match products to a subcategory (title / tags / product_type / handle)
+const SUB_KEYWORDS: Record<string, { label: string; keywords: string[] }> = {
+  midi: { label: "Midi", keywords: ["midi"] },
+  longo: { label: "Longo", keywords: ["longo", "long"] },
+  curto: { label: "Curto", keywords: ["curto", "mini"] },
+  chemise: { label: "Chemise", keywords: ["chemise"] },
+  blazer: { label: "Blazers", keywords: ["blazer"] },
+  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"] },
+  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"] },
+  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"] },
+  blusa: { label: "Blusas", keywords: ["blusa"] },
+  camisa: { label: "Camisas", keywords: ["camisa"] },
+  regata: { label: "Regatas", keywords: ["regata"] },
+  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"] },
+  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"] },
+  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"] },
+  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"] },
+};
+
+function matchesSub(p: ShopifyProduct, sub: string): boolean {
+  const cfg = SUB_KEYWORDS[sub];
+  if (!cfg) return true;
+  const hay = [
+    p.node.title,
+    p.node.productType ?? "",
+    p.node.handle ?? "",
+    ...(p.node.tags ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
+  return cfg.keywords.some((k) => hay.includes(k.toLowerCase()));
+}
+
 export const Route = createFileRoute("/colecao/$slug")({
+  validateSearch: zodValidator(searchSchema),
   loader: ({ params }) => {
     const cfg = COLLECTION_QUERIES[params.slug];
     if (!cfg) throw notFound();
@@ -62,10 +102,14 @@ const SIZE_CHIPS = ["PP", "P", "M", "G", "GG", "G1", "G2", "G3"];
 
 function ColecaoPage() {
   const { cfg, slug } = Route.useLoaderData();
+  const { sub } = Route.useSearch();
   const [sort, setSort] = useState("relevance");
   const [colors, setColors] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const [drawer, setDrawer] = useState(false);
+
+  const subCfg = sub ? SUB_KEYWORDS[sub] : undefined;
+  const heading = subCfg ? subCfg.label : cfg.title;
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products", slug, cfg.query ?? null],
@@ -75,6 +119,10 @@ function ColecaoPage() {
   const filtered = useMemo(() => {
     let r: ShopifyProduct[] = [...products];
     if (slug === "novidades") r = r.filter(isProductNew).length > 0 ? r.filter(isProductNew) : r;
+    if (sub) {
+      const matched = r.filter((p) => matchesSub(p, sub));
+      if (matched.length > 0) r = matched;
+    }
     if (colors.length) {
       r = r.filter((p) => getProductColors(p).some((c) => colors.some((sel) => sel.toLowerCase() === c.name.toLowerCase())));
     }
@@ -85,7 +133,7 @@ function ColecaoPage() {
     if (sort === "price-desc") r = [...r].sort((a, b) => getProductPrice(b) - getProductPrice(a));
     if (sort === "new") r = [...r].sort((a, b) => Number(isProductNew(b)) - Number(isProductNew(a)));
     return r;
-  }, [products, slug, colors, sizes, sort]);
+  }, [products, slug, sub, colors, sizes, sort]);
 
   const toggle = (arr: string[], v: string, set: (a: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -94,13 +142,22 @@ function ColecaoPage() {
     <SiteLayout>
       <nav aria-label="Migalhas" className="container-dm pt-8 text-xs text-muted-foreground">
         <Link to="/" className="hover:text-primary">Home</Link> <span className="mx-1">/</span>
-        <span className="text-foreground">{cfg.title}</span>
+        {subCfg ? (
+          <>
+            <Link to="/colecao/$slug" params={{ slug }} className="hover:text-primary">{cfg.title}</Link>
+            <span className="mx-1">/</span>
+            <span className="text-foreground">{subCfg.label}</span>
+          </>
+        ) : (
+          <span className="text-foreground">{cfg.title}</span>
+        )}
       </nav>
 
       <header className="container-dm pt-6 pb-10 md:pt-10 md:pb-14 max-w-3xl">
-        <h1 className="font-display text-3xl md:text-5xl leading-tight">{cfg.title}</h1>
+        <h1 className="font-display text-3xl md:text-5xl leading-tight">{heading}</h1>
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
       </header>
+
 
       <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
         <p className="text-sm text-muted-foreground">
