@@ -102,10 +102,14 @@ const SIZE_CHIPS = ["PP", "P", "M", "G", "GG", "G1", "G2", "G3"];
 
 function ColecaoPage() {
   const { cfg, slug } = Route.useLoaderData();
+  const { sub } = Route.useSearch();
   const [sort, setSort] = useState("relevance");
   const [colors, setColors] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const [drawer, setDrawer] = useState(false);
+
+  const subCfg = sub ? SUB_KEYWORDS[sub] : undefined;
+  const heading = subCfg ? subCfg.label : cfg.title;
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products", slug, cfg.query ?? null],
@@ -115,6 +119,10 @@ function ColecaoPage() {
   const filtered = useMemo(() => {
     let r: ShopifyProduct[] = [...products];
     if (slug === "novidades") r = r.filter(isProductNew).length > 0 ? r.filter(isProductNew) : r;
+    if (sub) {
+      const matched = r.filter((p) => matchesSub(p, sub));
+      if (matched.length > 0) r = matched;
+    }
     if (colors.length) {
       r = r.filter((p) => getProductColors(p).some((c) => colors.some((sel) => sel.toLowerCase() === c.name.toLowerCase())));
     }
@@ -125,7 +133,7 @@ function ColecaoPage() {
     if (sort === "price-desc") r = [...r].sort((a, b) => getProductPrice(b) - getProductPrice(a));
     if (sort === "new") r = [...r].sort((a, b) => Number(isProductNew(b)) - Number(isProductNew(a)));
     return r;
-  }, [products, slug, colors, sizes, sort]);
+  }, [products, slug, sub, colors, sizes, sort]);
 
   const toggle = (arr: string[], v: string, set: (a: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -134,13 +142,22 @@ function ColecaoPage() {
     <SiteLayout>
       <nav aria-label="Migalhas" className="container-dm pt-8 text-xs text-muted-foreground">
         <Link to="/" className="hover:text-primary">Home</Link> <span className="mx-1">/</span>
-        <span className="text-foreground">{cfg.title}</span>
+        {subCfg ? (
+          <>
+            <Link to="/colecao/$slug" params={{ slug }} className="hover:text-primary">{cfg.title}</Link>
+            <span className="mx-1">/</span>
+            <span className="text-foreground">{subCfg.label}</span>
+          </>
+        ) : (
+          <span className="text-foreground">{cfg.title}</span>
+        )}
       </nav>
 
       <header className="container-dm pt-6 pb-10 md:pt-10 md:pb-14 max-w-3xl">
-        <h1 className="font-display text-3xl md:text-5xl leading-tight">{cfg.title}</h1>
+        <h1 className="font-display text-3xl md:text-5xl leading-tight">{heading}</h1>
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
       </header>
+
 
       <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
         <p className="text-sm text-muted-foreground">
