@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ProductCard } from "@/components/site/ProductCard";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
@@ -13,7 +15,45 @@ import {
 } from "@/data/products";
 import { ChevronDown, SlidersHorizontal, X, Loader2 } from "lucide-react";
 
+const searchSchema = z.object({
+  sub: fallback(z.string(), "").default(""),
+});
+
+// Keywords used to match products to a subcategory (title / tags / product_type / handle)
+const SUB_KEYWORDS: Record<string, { label: string; keywords: string[] }> = {
+  midi: { label: "Midi", keywords: ["midi"] },
+  longo: { label: "Longo", keywords: ["longo", "long"] },
+  curto: { label: "Curto", keywords: ["curto", "mini"] },
+  chemise: { label: "Chemise", keywords: ["chemise"] },
+  blazer: { label: "Blazers", keywords: ["blazer"] },
+  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"] },
+  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"] },
+  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"] },
+  blusa: { label: "Blusas", keywords: ["blusa"] },
+  camisa: { label: "Camisas", keywords: ["camisa"] },
+  regata: { label: "Regatas", keywords: ["regata"] },
+  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"] },
+  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"] },
+  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"] },
+  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"] },
+};
+
+function matchesSub(p: ShopifyProduct, sub: string): boolean {
+  const cfg = SUB_KEYWORDS[sub];
+  if (!cfg) return true;
+  const hay = [
+    p.node.title,
+    p.node.productType ?? "",
+    p.node.handle ?? "",
+    ...(p.node.tags ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
+  return cfg.keywords.some((k) => hay.includes(k.toLowerCase()));
+}
+
 export const Route = createFileRoute("/colecao/$slug")({
+  validateSearch: zodValidator(searchSchema),
   loader: ({ params }) => {
     const cfg = COLLECTION_QUERIES[params.slug];
     if (!cfg) throw notFound();
