@@ -40,7 +40,7 @@ function SobrePage() {
             </p>
           </div>
           <div className="aspect-[4/5] overflow-hidden">
-            <img src="https://divinamulher.com.br/wp-content/uploads/2025/12/15386744535-estudio-divina-mulher-16-10-2025-0031.jpg" alt="Editorial Divina Mulher" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80" alt="Editorial Divina Mulher" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
