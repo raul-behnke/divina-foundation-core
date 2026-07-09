@@ -116,7 +116,7 @@ function HomePage() {
             </Button>
           </div>
           <div className="aspect-[4/5] overflow-hidden">
-            <img src="https://divinamulher.com.br/wp-content/uploads/2025/12/15393459661-estudio-divina-mulher-31-10-2025-0695.jpg" alt="Editorial Divina Mulher — atelier" className="w-full h-full object-cover" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80" alt="Editorial Divina Mulher — atelier" className="w-full h-full object-cover" loading="lazy" />
           </div>
         </div>
       </section>
