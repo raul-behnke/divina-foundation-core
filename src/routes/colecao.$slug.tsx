@@ -166,6 +166,46 @@ function ColecaoPage() {
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">{cfg.description}</p>
       </header>
 
+      {COLLECTION_SUBS[slug] && (
+        <div className="container-dm pb-10 md:pb-14">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {COLLECTION_SUBS[slug].map((subKey) => {
+              const s = SUB_KEYWORDS[subKey];
+              if (!s) return null;
+              const active = sub === subKey;
+              return (
+                <Link
+                  key={subKey}
+                  to="/colecao/$slug"
+                  params={{ slug }}
+                  search={active ? {} : { sub: subKey }}
+                  className={`group block overflow-hidden bg-background-soft border transition ${
+                    active ? "border-primary ring-2 ring-primary/30" : "border-transparent hover:border-border"
+                  }`}
+                  aria-pressed={active}
+                >
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      src={s.image}
+                      alt={s.label}
+                      loading="lazy"
+                      className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-3 md:p-4 text-center">
+                    <span className={`font-display text-sm md:text-base tracking-wide ${active ? "text-primary" : "text-foreground group-hover:text-primary"}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+
+
 
       <div className="container-dm flex items-center justify-between gap-4 pb-6 border-b border-border">
         <p className="text-sm text-muted-foreground">
