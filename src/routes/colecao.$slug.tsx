@@ -19,23 +19,31 @@ const searchSchema = z.object({
   sub: fallback(z.string(), "").default(""),
 });
 
-// Keywords used to match products to a subcategory (title / tags / product_type / handle)
-const SUB_KEYWORDS: Record<string, { label: string; keywords: string[] }> = {
-  midi: { label: "Midi", keywords: ["midi"] },
-  longo: { label: "Longo", keywords: ["longo", "long"] },
-  curto: { label: "Curto", keywords: ["curto", "mini"] },
-  chemise: { label: "Chemise", keywords: ["chemise"] },
-  blazer: { label: "Blazers", keywords: ["blazer"] },
-  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"] },
-  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"] },
-  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"] },
-  blusa: { label: "Blusas", keywords: ["blusa"] },
-  camisa: { label: "Camisas", keywords: ["camisa"] },
-  regata: { label: "Regatas", keywords: ["regata"] },
-  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"] },
-  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"] },
-  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"] },
-  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"] },
+// Keywords + Unsplash cover used to match/represent each subcategory
+const SUB_KEYWORDS: Record<string, { label: string; keywords: string[]; image: string }> = {
+  midi: { label: "Midi", keywords: ["midi"], image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80" },
+  longo: { label: "Longo", keywords: ["longo", "long"], image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80" },
+  curto: { label: "Curto", keywords: ["curto", "mini"], image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80" },
+  chemise: { label: "Chemise", keywords: ["chemise"], image: "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?auto=format&fit=crop&w=800&q=80" },
+  blazer: { label: "Blazers", keywords: ["blazer"], image: "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=800&q=80" },
+  calca: { label: "Calças de alfaiataria", keywords: ["calça", "calca", "pantalona", "pant"], image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80" },
+  conjunto: { label: "Conjuntos", keywords: ["conjunto", "set"], image: "https://images.unsplash.com/photo-1571513722275-4b41940f54b8?auto=format&fit=crop&w=800&q=80" },
+  bermuda: { label: "Bermudas & Shorts", keywords: ["bermuda", "short"], image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80" },
+  blusa: { label: "Blusas", keywords: ["blusa"], image: "https://images.unsplash.com/photo-1564257577-2d3ee8740fd8?auto=format&fit=crop&w=800&q=80" },
+  camisa: { label: "Camisas", keywords: ["camisa"], image: "https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=800&q=80" },
+  regata: { label: "Regatas", keywords: ["regata"], image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=80" },
+  "vestido-plus": { label: "Vestidos Plus", keywords: ["vestido"], image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=800&q=80" },
+  "blusa-plus": { label: "Blusas Plus", keywords: ["blusa"], image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80" },
+  "calca-plus": { label: "Calças Plus", keywords: ["calça", "calca"], image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80" },
+  "conjunto-plus": { label: "Conjuntos Plus", keywords: ["conjunto"], image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" },
+};
+
+// Which subcategory chips to show on each parent collection page
+const COLLECTION_SUBS: Record<string, string[]> = {
+  vestidos: ["midi", "longo", "curto", "chemise"],
+  alfaiataria: ["blazer", "calca", "conjunto", "bermuda"],
+  blusas: ["blusa", "camisa", "regata"],
+  plus: ["vestido-plus", "blusa-plus", "calca-plus", "conjunto-plus"],
 };
 
 function matchesSub(p: ShopifyProduct, sub: string): boolean {
