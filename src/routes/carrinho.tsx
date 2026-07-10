@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/carrinho")({
   head: () => ({
@@ -31,7 +32,16 @@ function CartPage() {
 
   const handleCheckout = () => {
     const url = getCheckoutUrl();
-    if (url) window.open(url, "_blank");
+    if (url) {
+      fbqTrack("InitiateCheckout", {
+        num_items: totalItems,
+        value: totalPrice,
+        currency,
+        contents: items.map((i) => ({ id: i.variantId, quantity: i.quantity })),
+        content_ids: items.map((i) => i.variantId),
+      });
+      window.open(url, "_blank");
+    }
   };
 
   return (

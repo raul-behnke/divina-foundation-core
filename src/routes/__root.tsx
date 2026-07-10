@@ -4,12 +4,14 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { useCartSync } from "@/hooks/useCartSync";
+import { initMetaPixel, trackPageView } from "@/lib/meta-pixel";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -111,6 +113,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartSyncBridge />
+      <MetaPixelBridge />
       <Outlet />
       <Toaster position="top-center" />
     </QueryClientProvider>
@@ -121,3 +124,15 @@ function CartSyncBridge() {
   useCartSync();
   return null;
 }
+
+function MetaPixelBridge() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => {
+    initMetaPixel();
+  }, []);
+  useEffect(() => {
+    trackPageView();
+  }, [pathname]);
+  return null;
+}
+

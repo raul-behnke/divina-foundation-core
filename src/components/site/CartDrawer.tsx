@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
@@ -34,6 +35,13 @@ export function CartDrawer() {
   const handleCheckout = () => {
     const url = getCheckoutUrl();
     if (url) {
+      fbqTrack("InitiateCheckout", {
+        num_items: totalItems,
+        value: totalPrice,
+        currency,
+        contents: items.map((i) => ({ id: i.variantId, quantity: i.quantity })),
+        content_ids: items.map((i) => i.variantId),
+      });
       window.open(url, "_blank");
       setOpen(false);
     }
