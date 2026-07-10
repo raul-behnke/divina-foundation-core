@@ -13,6 +13,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { useCartSync } from "@/hooks/useCartSync";
 import { initMetaPixel, trackPageView } from "@/lib/meta-pixel";
 import faviconAsset from "@/assets/favicon.png.asset.json";
+
+import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
