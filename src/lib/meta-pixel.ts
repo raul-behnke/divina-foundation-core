@@ -44,7 +44,7 @@ export function initMetaPixel() {
 export function fbqTrack(event: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   try {
-    window.fbq?.("track", event, params);
+    (window.fbq as any)?.("track", event, params);
   } catch (e) {
     console.warn("Meta Pixel track failed", e);
   }
