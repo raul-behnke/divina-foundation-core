@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchHomeBanners, type HomeBanner } from "@/lib/shopify";
+import banner1 from "@/assets/banner1.png.asset.json";
+import banner2 from "@/assets/banner2.png.asset.json";
+import banner3 from "@/assets/banner3.png.asset.json";
 
 type Slide = {
   src: string;
