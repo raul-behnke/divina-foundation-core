@@ -113,6 +113,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartSyncBridge />
+      <MetaPixelBridge />
       <Outlet />
       <Toaster position="top-center" />
     </QueryClientProvider>
@@ -123,3 +124,15 @@ function CartSyncBridge() {
   useCartSync();
   return null;
 }
+
+function MetaPixelBridge() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => {
+    initMetaPixel();
+  }, []);
+  useEffect(() => {
+    trackPageView();
+  }, [pathname]);
+  return null;
+}
+
