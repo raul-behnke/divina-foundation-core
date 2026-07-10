@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/carrinho")({
   head: () => ({
