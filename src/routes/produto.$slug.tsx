@@ -118,6 +118,16 @@ function ProdutoPage() {
   });
   const related = relatedProducts.filter((p) => p.node.id !== node.id).slice(0, 4);
 
+  useEffect(() => {
+    fbqTrack("ViewContent", {
+      content_ids: [node.id],
+      content_name: node.title,
+      content_type: "product",
+      value: priceNum,
+      currency: price.currencyCode,
+    });
+  }, [node.id, node.title, priceNum, price.currencyCode]);
+
   const handleAddToCart = async () => {
     if (sizes.length > 0 && !size) {
       toast.error("Selecione um tamanho");
@@ -142,6 +152,14 @@ function ProdutoPage() {
       price: selectedVariant.price,
       quantity: qty,
       selectedOptions: selectedVariant.selectedOptions,
+    });
+    fbqTrack("AddToCart", {
+      content_ids: [selectedVariant.id],
+      content_name: node.title,
+      content_type: "product",
+      value: parseFloat(selectedVariant.price.amount) * qty,
+      currency: selectedVariant.price.currencyCode,
+      contents: [{ id: selectedVariant.id, quantity: qty }],
     });
     toast.success("Adicionado à sacola");
   };
