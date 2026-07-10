@@ -27,8 +27,21 @@ function CheckoutSuccessPage() {
   const clearCart = useCartStore((s) => s.clearCart);
 
   useEffect(() => {
+    // Capture snapshot before clearing so we can report the purchase value.
+    const items = useCartStore.getState().items;
+    const value = items.reduce((sum, i) => sum + parseFloat(i.price.amount) * i.quantity, 0);
+    const currency = items[0]?.price.currencyCode ?? "BRL";
+    const contents = items.map((i) => ({ id: i.variantId, quantity: i.quantity }));
+    fbqTrack("Purchase", {
+      value,
+      currency,
+      contents,
+      content_ids: items.map((i) => i.variantId),
+      num_items: items.reduce((s, i) => s + i.quantity, 0),
+      ...(order ? { order_id: order } : {}),
+    });
     clearCart();
-  }, [clearCart]);
+  }, [clearCart, order]);
 
   return (
     <SiteLayout>
