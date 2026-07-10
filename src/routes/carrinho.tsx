@@ -32,7 +32,16 @@ function CartPage() {
 
   const handleCheckout = () => {
     const url = getCheckoutUrl();
-    if (url) window.open(url, "_blank");
+    if (url) {
+      fbqTrack("InitiateCheckout", {
+        num_items: totalItems,
+        value: totalPrice,
+        currency,
+        contents: items.map((i) => ({ id: i.variantId, quantity: i.quantity })),
+        content_ids: items.map((i) => i.variantId),
+      });
+      window.open(url, "_blank");
+    }
   };
 
   return (
