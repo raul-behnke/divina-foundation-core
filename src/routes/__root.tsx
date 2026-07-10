@@ -76,8 +76,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Divina Mulher | Alfaiataria feminina premium" },
       { name: "twitter:description", content: "Moda feminina premium com foco em alfaiataria contemporânea e modelagens que valorizam diferentes corpos. 18 anos em Joinville/SC." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7be3f6d8-8559-43f3-8a97-a562cfa435cc/id-preview-683be7b8--ffa147f5-63d5-4520-ba0e-ef10777bdd7e.lovable.app-1782401833181.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7be3f6d8-8559-43f3-8a97-a562cfa435cc/id-preview-683be7b8--ffa147f5-63d5-4520-ba0e-ef10777bdd7e.lovable.app-1782401833181.png" },
+      { property: "og:image", content: "https://divina-foundation-core.lovable.app/__l5e/assets-v1/ba5c119f-b00c-4e8b-90ab-94b362a48770/logo-preview.png" },
+      { name: "twitter:image", content: "https://divina-foundation-core.lovable.app/__l5e/assets-v1/ba5c119f-b00c-4e8b-90ab-94b362a48770/logo-preview.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
