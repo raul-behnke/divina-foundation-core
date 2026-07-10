@@ -18,6 +18,7 @@ import {
   isProductNew,
 } from "@/data/products";
 import { useCartStore } from "@/stores/cartStore";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: async ({ params }) => {
