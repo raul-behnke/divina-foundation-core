@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { formatPrice } from "@/lib/shopify";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
