@@ -4,6 +4,7 @@ import { z } from "zod";
 import { CheckCircle2, Package, Mail } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useCartStore } from "@/stores/cartStore";
+import { fbqTrack } from "@/lib/meta-pixel";
 
 const searchSchema = z.object({
   order: z.string().optional(),
