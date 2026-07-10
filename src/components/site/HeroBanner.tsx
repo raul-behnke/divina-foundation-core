@@ -17,16 +17,16 @@ type Slide = {
 
 const FALLBACK_SLIDES: Slide[] = [
   {
-    src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=80",
-    alt: "Modelo com look de alfaiataria feminina em editorial de moda",
+    src: banner1.url,
+    alt: "Divina Mulher — conjunto suede marrom com jaqueta e calça pantalona",
   },
   {
-    src: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2000&q=80",
-    alt: "Mulher elegante com vestido contemporâneo em cenário minimalista",
+    src: banner2.url,
+    alt: "Divina Mulher — look verde esmeralda com tricô e calça de alfaiataria",
   },
   {
-    src: "https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=2000&q=80",
-    alt: "Editorial de moda feminina premium com luz natural",
+    src: banner3.url,
+    alt: "Divina Mulher — jaqueta suede marrom em close editorial",
   },
 ];
 
